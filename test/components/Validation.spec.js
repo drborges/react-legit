@@ -1,7 +1,9 @@
 import React from "react"
+import sinon from "sinon"
 import { expect } from "chai"
 import { shallow } from "enzyme"
-import Validation from "../../lib/components/Validation"
+import Validation from "../../lib/Validation"
+import { required } from "../../lib/validators"
 
 describe("Validation", () => {
   describe("props.failed", () => {
@@ -38,6 +40,36 @@ describe("Validation", () => {
       )
 
       expect(wrapper.find("input")).to.not.have.className("validation-failed")
+    })
+  })
+
+  describe("props.rules", () => {
+    describe("trigger: on change", () => {
+      it("marks input as failed validation when a validation rule fails", () => {
+        const handleFailure = sinon.spy()
+        const wrapper = shallow(
+          <Validation onFailure={handleFailure} rules={[ required ]}>
+            <input name="username" type="text" />
+          </Validation>
+        )
+
+        wrapper.find("input").simulate("change", { target: { value: "" }})
+
+        expect(handleFailure).to.have.been.calledWith({ username: "This field is required." })
+      })
+
+      it("does not mark input as failed validation when no validation rule fails", () => {
+        const handleFailure = sinon.spy()
+        const wrapper = shallow(
+          <Validation onFailure={handleFailure} rules={[ required ]}>
+            <input name="username" type="text" />
+          </Validation>
+        )
+
+        wrapper.find("input").simulate("change", { target: { value: "Test" }})
+
+        expect(handleFailure).to.not.have.been.calledWith({ username: "This field is required." })
+      })
     })
   })
 })
