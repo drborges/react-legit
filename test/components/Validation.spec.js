@@ -50,7 +50,7 @@ describe("Validation", () => {
   })
 
   describe("props.rules", () => {
-    context("on input change", () => {
+    context("props.trigger = onChange", () => {
       context("when validation rule fails", () => {
         it("marks input as failed validation", () => {
           const handleFailure = sinon.spy()
@@ -76,6 +76,38 @@ describe("Validation", () => {
           )
 
           wrapper.find("input").simulate("change", { target: { value: "Test" }})
+
+          expect(handleFailure).to.not.have.been.calledWith({ username: "This field is required." })
+        })
+      })
+    })
+
+    context("props.trigger = onBlur", () => {
+      context("when validation rule fails", () => {
+        it("marks input as failed validation", () => {
+          const handleFailure = sinon.spy()
+          const wrapper = shallow(
+            <Validation onFailure={handleFailure} rules={[ required ]} trigger="onBlur">
+              <input name="username" type="text" />
+            </Validation>
+          )
+
+          wrapper.find("input").simulate("blur", { target: { value: "" }})
+
+          expect(handleFailure).to.have.been.calledWith({ username: "This field is required." })
+        })
+      })
+
+      context("when validation rule passes", () => {
+        it("does not mark input as failed validation", () => {
+          const handleFailure = sinon.spy()
+          const wrapper = shallow(
+            <Validation onFailure={handleFailure} rules={[ required ]} trigger="onBlur">
+              <input name="username" type="text" />
+            </Validation>
+          )
+
+          wrapper.find("input").simulate("blur", { target: { value: "Test" }})
 
           expect(handleFailure).to.not.have.been.calledWith({ username: "This field is required." })
         })
