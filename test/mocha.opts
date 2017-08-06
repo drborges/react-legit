@@ -2,6 +2,7 @@
 --require babel-polyfill
 --require jsdom-global/register
 --require test/spec.helper.js
+--watch-extensions jsx
 --reporter spec
 --recursive
 --ui bdd
