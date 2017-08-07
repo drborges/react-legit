@@ -3,7 +3,7 @@ import sinon from "sinon"
 import { expect } from "chai"
 import { shallow } from "enzyme"
 import Validation from "../../lib/Validation"
-import { required } from "../../lib/validators"
+import { required } from "../../lib/rules"
 
 const wait = (delay = 10) => new Promise((resolve) => setTimeout(resolve, delay))
 
