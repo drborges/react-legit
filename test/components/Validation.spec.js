@@ -50,6 +50,8 @@ describe("Validation", () => {
   })
 
   describe("props.rules", () => {
+    const wait = (delay = 10) => new Promise((resolve) => setTimeout(resolve, delay))
+
     context("when props.trigger is absent", () => {
       let handleFailure, wrapper
 
@@ -65,7 +67,10 @@ describe("Validation", () => {
       context("when validation rule fails", () => {
         it("marks input as failed validation on 'change' event", () => {
           wrapper.find("input").simulate("change", { target: { value: "" }})
-          expect(handleFailure).to.have.been.calledWith({ username: "This field is required." })
+
+          return wait().then(() => {
+            expect(handleFailure).to.have.been.calledWith({ username: "This field is required." })
+          })
         })
       })
 
@@ -92,7 +97,10 @@ describe("Validation", () => {
       context("when validation rule fails", () => {
         it("marks input as failed validation on 'blur' event", () => {
           wrapper.find("input").simulate("blur", { target: { value: "" }})
-          expect(handleFailure).to.have.been.calledWith({ username: "This field is required." })
+
+          return wait().then(() => {
+            expect(handleFailure).to.have.been.calledWith({ username: "This field is required." })
+          })
         })
       })
 

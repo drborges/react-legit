@@ -7,8 +7,7 @@ const markAsValidationFailed = (child) => React.cloneElement(child, {
 const bindValidationRules = (rules, trigger, onFailure) => (child) => React.cloneElement(child, {
   [trigger]: (event) => {
     rules.forEach((rule) => {
-      const error = rule(event.target.value)
-      error && onFailure({ [child.props.name]: error })
+      rule(event.target.value).catch(error => onFailure({ [child.props.name]: error }))
     })
   }
 })
