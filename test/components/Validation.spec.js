@@ -5,6 +5,8 @@ import { shallow } from "enzyme"
 import Validation from "../../lib/Validation"
 import { required } from "../../lib/validators"
 
+const wait = (delay = 10) => new Promise((resolve) => setTimeout(resolve, delay))
+
 describe("Validation", () => {
   describe("props.failed", () => {
     context("when present", () => {
@@ -50,64 +52,74 @@ describe("Validation", () => {
   })
 
   describe("props.rules", () => {
-    const wait = (delay = 10) => new Promise((resolve) => setTimeout(resolve, delay))
-
     context("when props.trigger is absent", () => {
-      let handleFailure, wrapper
+      let handleFailure, handleSuccess, wrapper
 
       beforeEach(() => {
+        handleSuccess = sinon.spy()
         handleFailure = sinon.spy()
         wrapper = shallow(
-          <Validation onFailure={handleFailure} rules={[ required ]}>
+          <Validation onFailure={handleFailure} onSuccess={handleSuccess} rules={[ required ]}>
             <input name="username" type="text" />
           </Validation>
         )
       })
 
       context("when validation rule fails", () => {
-        it("marks input as failed validation on 'change' event", () => {
+        it("notifies listeners about the failure on input's 'change' event", () => {
           wrapper.find("input").simulate("change", { target: { value: "" }})
 
           return wait().then(() => {
+            expect(handleSuccess).to.have.not.been.calledWith({ username: "Test" })
             expect(handleFailure).to.have.been.calledWith({ username: "This field is required." })
           })
         })
       })
 
       context("when validation rule passes", () => {
-        it("does not mark input as failed validation on 'change' event", () => {
+        it("notifies listeners about the success on input's 'change' event", () => {
           wrapper.find("input").simulate("change", { target: { value: "Test" }})
-          expect(handleFailure).to.not.have.been.calledWith({ username: "This field is required." })
+
+          return wait().then(() => {
+            expect(handleSuccess).to.have.been.calledWith({ username: "Test" })
+            expect(handleFailure).to.not.have.been.calledWith({ username: "This field is required." })
+          })
         })
       })
     })
 
     context("props.trigger = onBlur", () => {
-      let handleFailure, wrapper
+      let handleFailure, handleSuccess, wrapper
 
       beforeEach(() => {
+        handleSuccess = sinon.spy()
         handleFailure = sinon.spy()
         wrapper = shallow(
-          <Validation onFailure={handleFailure} rules={[ required ]} trigger="onBlur">
+          <Validation onFailure={handleFailure} onSuccess={handleSuccess} rules={[ required ]} trigger="onBlur">
             <input name="username" type="text" />
           </Validation>
         )
       })
 
       context("when validation rule fails", () => {
-        it("marks input as failed validation on 'blur' event", () => {
+        it("notifies listeners about the failure on input's 'blur' event", () => {
           wrapper.find("input").simulate("blur", { target: { value: "" }})
 
           return wait().then(() => {
+            expect(handleSuccess).to.have.not.been.calledWith({ username: "Test" })
             expect(handleFailure).to.have.been.calledWith({ username: "This field is required." })
           })
         })
       })
 
       context("when validation rule passes", () => {
-        it("does not mark input as failed validation on 'blur' event", () => {
+        it("notifies listeners about the success on input's 'blur' event", () => {
           wrapper.find("input").simulate("blur", { target: { value: "Test" }})
-          expect(handleFailure).to.not.have.been.calledWith({ username: "This field is required." })
+
+          return wait().then(() => {
+            expect(handleSuccess).to.have.been.calledWith({ username: "Test" })
+            expect(handleFailure).to.not.have.been.calledWith({ username: "This field is required." })
+          })
         })
       })
     })
