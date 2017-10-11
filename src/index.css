@@ -1,0 +1,13 @@
+input:invalid,
+select:invalid {
+  outline: none;
+  border: thin solid red;
+  box-shadow: 0 0 10px red;
+}
+
+input:valid,
+select:valid {
+  outline: none;
+  border: thin solid green;
+  box-shadow: 0 0 10px green;
+}

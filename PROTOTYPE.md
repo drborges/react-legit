@@ -56,7 +56,7 @@ Validation.config.selectors = {
 ### Legit.Validation: Disabling Validation
 
 ```jsx
-<Validation onFailure={...} onSuccess={...} disabled>
+<Validation disabled>
   <input type="number" name="grantor_id" required />
   <Feedback message="Grantor ID must be informed when a waiver response is provided" />
 </Validation>
@@ -65,7 +65,7 @@ Validation.config.selectors = {
 ### Legit.Validation: Feedback Delay
 
 ```jsx
-<Validation onFailure={...} onSuccess={...} delay={500}>
+<Validation delay={500}>
   <input type="number" name="grantor_id" required />
   <Feedback message="Grantor ID must be informed when a waiver response is provided" />
 </Validation>
@@ -76,7 +76,25 @@ Validation.config.selectors = {
 Traverses the children elements (ignoring `Feedback`) looking for an input element to bind validation rules to.
 
 ```jsx
-<Validation onFailure={...} onSuccess={...} traverse>
+<Validation traverse>
+  <MyInputWrapper />
+  <Feedback message="Grantor ID must be informed when a waiver response is provided" />
+</Validation>
+```
+
+```jsx
+<Validation traverse={(elem) => elem.name === "username"}>
+  <MyUsernameInput />
+  <Feedback message="Username is required" />
+</Validation>
+```
+
+### Legit.Validation: trigger
+
+Override the default `onChange` validation trigger.
+
+```jsx
+<Validation trigger={["onFocus", "onBlur"]}>
   <MyInputWrapper />
   <Feedback message="Grantor ID must be informed when a waiver response is provided" />
 </Validation>
@@ -89,8 +107,10 @@ Traverses the children elements (ignoring `Feedback`) looking for an input eleme
 ```
 ### Legit Message Resolvers
 
-Validation.config.messageResolvers = {
+```js
+Validation.config.messages = {
   valueMissing: (input) => "is required!",
   typeMismatch: (input) => `must be of type ${input.type}`,
   patternMismatch: (input) => `does not match pattern ${input.pattern}!`,
 }
+```
