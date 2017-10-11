@@ -1,0 +1,64 @@
+.row {
+  margin: 10px;
+}
+
+button {
+  color: #fff;
+  height: 35px;
+  min-width: 100px;
+  padding: 10px;
+  margin-left: 10px;
+  border-radius: 3px;
+  border: thin solid rgb(53, 107, 192);
+  background-color: rgb(53, 107, 192);
+}
+
+input, select, textarea {
+  border-radius: 3px;
+  padding: 5px;
+  margin-left: 20px;
+  margin-right: 5px;
+}
+
+input, select {
+  height: 20px;
+}
+
+input:invalid,
+select:invalid,
+textarea:invalid {
+  outline: none;
+  border: thin solid red;
+  box-shadow: 0 0 10px red;
+}
+
+input[type=checkbox],
+input[type=checkbox]:valid,
+input[type=radio],
+input[type=radio]:valid {
+  box-shadow: none;
+}
+
+input[type=checkbox]:invalid:before,
+input[type=radio]:invalid:before {
+  color: red;
+  content: "* ";
+  margin-left: -10px;
+}
+
+input:valid,
+select:valid,
+textarea:valid {
+  outline: none;
+  border: thin solid green;
+  box-shadow: 0 0 10px green;
+}
+
+* {
+  font-family: monospace;
+  font-size: 12px;
+}
+
+label {
+  font-weight: bold;
+}
