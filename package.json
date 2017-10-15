@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "css-loader": "^0.28.7",
+    "debounce-promise": "^3.0.1",
     "node-sass": "^4.5.3",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",

@@ -114,5 +114,28 @@ describe("Validation", () => {
         });
       });
     });
+
+    describe("debounced validation", () => {
+      it("ratelimits validation by debouncing the trigger event", () => {
+        const handleSuccess = jest.fn((event) => event.target.value);
+        const event1 = createEvent({ target: { value: 2 } });
+        const event2 = createEvent({ target: { value: 4 } });
+        const wait = (delay) => new Promise((resolve, reject) => setTimeout(resolve, delay));
+
+        const validation = mount(
+          <Validation rules={[nonZero, isEven]} onSuccess={handleSuccess} debounce={20}>
+            <input type="text" />
+          </Validation>
+        );
+
+        const triggerValidation = validation.find("input").props().onChange;
+        const validation1 = triggerValidation(event1);
+        const validation2 = wait(10).then(() => triggerValidation(event2));
+
+        return Promise.all([ validation1, validation2 ]).then((results) => {
+          expect(results).toEqual([ event2.target.value, event2.target.value ]);
+        });
+      });
+    });
   });
 });

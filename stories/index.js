@@ -42,9 +42,21 @@ const html5InputPattern = () => (
   </Validation>
 );
 
+const debounceValidationBy = (wait) => (
+  <Validation onSuccess={action("Valid!")} onFailure={(e) => action(e.target.validationMessage)(e)} debounce={wait}>
+    <label htmlFor="username">* Username: </label>
+    <input id="username" type="text" minLength={3} maxLength={10} />
+  </Validation>
+);
+
 storiesOf("HTML5 Validation", module)
   .add("required", () => html5RequiredInput())
   .add("email", () => html5EmailInput())
   .add("url", () => html5URLInput())
   .add("number", () => html5NumberInput())
   .add("input pattern", () => html5InputPattern());
+
+storiesOf("Debounced Validation", module)
+  .add("by 100ms", () => debounceValidationBy(100))
+  .add("by 500ms", () => debounceValidationBy(500))
+  .add("by 1s", () => debounceValidationBy(1000));

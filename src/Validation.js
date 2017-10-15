@@ -1,9 +1,11 @@
 import React from "react";
+import debounce from "debounce-promise";
 
 import validate from "./validate";
 
 class Validation extends React.Component {
   static defaultProps = {
+    debounce: 0,
     trigger: "onChange",
     rules: [(event) => Promise.resolve(event)],
     tooltipEnabled: false,
@@ -17,14 +19,18 @@ class Validation extends React.Component {
     "textarea",
   ].indexOf(type) >= 0;
 
+  debouncedValidate = debounce((event) => {
+    return validate(event, this.props.rules)
+      .then(this.props.onSuccess)
+      .catch(this.props.onFailure);
+  }, this.props.debounce, { leading: false });
+
   withValidation = (element) => {
     return React.cloneElement(element, {
       onInvalid: (event) => !this.props.enableTooltip && event.preventDefault(),
       [this.props.trigger]: (event) => {
         event.persist();
-        return validate(event, this.props.rules)
-          .then(this.props.onSuccess)
-          .catch(this.props.onFailure);
+        return this.debouncedValidate(event)
       },
     });
   }
