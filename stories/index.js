@@ -49,6 +49,27 @@ const debounceValidationBy = (wait) => (
   </Validation>
 );
 
+const nonZeroAndEvenInput = () => {
+  const nonZeroNumber = (event) => new Promise((resolve, reject) =>
+    (event.target.value != 0) ?
+      resolve(event) :
+      reject("Cannot be zero!")
+  );
+
+  const evenNumber = (event) => new Promise((resolve, reject) =>
+    (event.target.value % 2 == 0) ?
+      resolve(event) :
+      reject("Must be an even number!")
+  );
+
+  return (
+    <Validation rules={[ nonZeroNumber, evenNumber ]} onSuccess={action("Valid!")} onFailure={(e) => action(e.target.validationMessage)(e)}>
+      <label htmlFor="nonzero-even">Non-zero and even: </label>
+      <input id="nonzero-even" type="number" />
+    </Validation>
+  );
+};
+
 storiesOf("HTML5 Validation", module)
   .add("required", () => html5RequiredInput())
   .add("email", () => html5EmailInput())
@@ -60,3 +81,6 @@ storiesOf("Debounced Validation", module)
   .add("by 100ms", () => debounceValidationBy(100))
   .add("by 500ms", () => debounceValidationBy(500))
   .add("by 1s", () => debounceValidationBy(1000));
+
+storiesOf("Custom Validation", module)
+  .add("with multiple rules", () => nonZeroAndEvenInput());
