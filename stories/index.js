@@ -1,0 +1,50 @@
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import { action } from "@storybook/addon-actions";
+import { linkTo } from "@storybook/addon-links";
+
+import Validation from "../src/Validation";
+
+import styles from "./styles.scss";
+
+const html5RequiredInput = () => (
+  <Validation onSuccess={action("Valid!")} onFailure={(e) => action(e.target.validationMessage)(e)}>
+    <label htmlFor="username">* Username: </label>
+    <input id="username" type="text" required />
+  </Validation>
+);
+
+const html5EmailInput = () => (
+  <Validation onSuccess={action("Valid!")} onFailure={(e) => action(e.target.validationMessage)(e)}>
+    <label htmlFor="email">Email: </label>
+    <input id="email" type="email" />
+  </Validation>
+);
+
+const html5URLInput = () => (
+  <Validation onSuccess={action("Valid!")} onFailure={(e) => action(e.target.validationMessage)(e)}>
+    <label htmlFor="website">Website: </label>
+    <input id="website" type="url" />
+  </Validation>
+);
+
+const html5NumberInput = () => (
+  <Validation onSuccess={action("Valid!")} onFailure={(e) => action(e.target.validationMessage)(e)}>
+    <label htmlFor="age">Age (between 18 and 40): </label>
+    <input id="age" type="number" min="18" max="40" step="1" />
+  </Validation>
+);
+
+const html5InputPattern = () => (
+  <Validation onSuccess={action("Valid!")} onFailure={(e) => action(e.target.validationMessage)(e)}>
+    <label htmlFor="phone">Cell: </label>
+    <input id="phone" type="text" pattern="\(\d\d\d\) \d\d\d-\d\d\d\d" placeholder="(ddd) ddd-dddd" />
+  </Validation>
+);
+
+storiesOf("HTML5 Validation", module)
+  .add("required", () => html5RequiredInput())
+  .add("email", () => html5EmailInput())
+  .add("url", () => html5URLInput())
+  .add("number", () => html5NumberInput())
+  .add("input pattern", () => html5InputPattern());
