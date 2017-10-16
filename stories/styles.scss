@@ -1,12 +1,39 @@
+input, select, textarea {
+  border-radius: 3px;
+  padding: 5px;
+  margin-left: 20px;
+  margin-right: 5px;
+}
+
+input, select {
+  height: 20px;
+}
+
 input:invalid,
-select:invalid {
+select:invalid,
+textarea:invalid {
   outline: none;
   border: thin solid red;
   box-shadow: 0 0 10px red;
 }
 
+input[type=checkbox],
+input[type=checkbox]:valid,
+input[type=radio],
+input[type=radio]:valid {
+  box-shadow: none;
+}
+
+input[type=checkbox]:invalid:before,
+input[type=radio]:invalid:before {
+  color: red;
+  content: "* ";
+  margin-left: -10px;
+}
+
 input:valid,
-select:valid {
+select:valid,
+textarea:valid {
   outline: none;
   border: thin solid green;
   box-shadow: 0 0 10px green;
