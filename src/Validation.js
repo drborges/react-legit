@@ -31,6 +31,7 @@ class Validation extends React.Component {
       onInvalid: (event) => !this.props.enableTooltip && event.preventDefault(),
       [this.props.trigger]: (event) => {
         event.persist();
+        (element.props[this.props.trigger] || (() => {}))(event);
         return this.throttledValidate(event)
       },
     });

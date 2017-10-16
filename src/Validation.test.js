@@ -94,6 +94,7 @@ describe("Validation", () => {
       });
     });
 
+
     describe("#trigger", () => {
       it("overrides validation trigger to be onBlur", () => {
         const handleSuccess = jest.fn();
@@ -109,6 +110,23 @@ describe("Validation", () => {
           expect(handleSuccess).toHaveBeenCalledWith(event);
         });
       });
+
+      it("does not override input event handlers", () => {
+        const handleChange = jest.fn();
+        const handleSuccess = jest.fn();
+        const event = createEvent({ target: { value: 2 } });
+
+        const validation = mount(
+          <Validation rules={[nonZero, isEven]} onSuccess={handleSuccess}>
+            <input type="text" value="" onChange={handleChange} />
+          </Validation>
+        );
+
+        return validation.find("input").props().onChange(event).then(() => {
+          expect(handleChange).toHaveBeenCalledWith(event);
+          expect(handleSuccess).toHaveBeenCalledWith(event);
+        });
+      })
     });
 
     describe("#throttle", () => {
