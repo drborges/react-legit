@@ -65,7 +65,7 @@ describe("Validation", () => {
         const event = createEvent({ target: { value: 2 } });
 
         const validation = mount(
-          <Validation rules={[nonZero, isEven]} onSuccess={handleSuccess} debounce={200}>
+          <Validation rules={[nonZero, isEven]} onSuccess={handleSuccess}>
             <input type="text" />
           </Validation>
         );
