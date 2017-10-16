@@ -1,3 +1,18 @@
+.row {
+  margin: 10px;
+}
+
+button {
+  color: #fff;
+  height: 35px;
+  min-width: 100px;
+  padding: 10px;
+  margin-left: 10px;
+  border-radius: 3px;
+  border: thin solid rgb(53, 107, 192);
+  background-color: rgb(53, 107, 192);
+}
+
 input, select, textarea {
   border-radius: 3px;
   padding: 5px;

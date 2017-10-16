@@ -123,6 +123,57 @@ const githubUsernameInput = () => {
   );
 };
 
+const formWithControlledState = () => {
+  const validIf = (predicate) => (event) => new Promise((resolve, reject) => {
+    predicate(event.target.value) ?
+      resolve(event) :
+      reject(`Value '${event.target.value}' does not match predicate!`);
+  });
+
+  class Form extends React.Component {
+    state = {
+      password: "",
+      passwordConfirmation: "",
+      tooltipEnabled: false,
+    }
+
+    handleChange = (event) => {
+      this.setState({
+        [event.target.name]: event.target.type === "checkbox" ? event.target.checked : event.target.value,
+      })
+    }
+
+    render() {
+      return (
+        <form>
+          <div className="row">
+            <Validation onFailure={(e) => action(e.target.validationMessage)(e)} enableTooltip={this.state.tooltipEnabled}>
+              <label htmlFor="username">* Password:</label>
+              <input id="password" name="password" type="password" value={this.state.password} onChange={this.handleChange} required />
+            </Validation>
+          </div>
+
+          <div className="row">
+            <Validation rules={[ validIf(value => value === this.state.password) ]} onFailure={(e) => action(e.target.validationMessage)(e)} enableTooltip={this.state.tooltipEnabled}>
+              <label htmlFor="username">* Confirm: </label>
+              <input id="password-confirm" name="passwordConfirmation" type="password" value={this.state.passwordConfirmation} onChange={this.handleChange} required />
+            </Validation>
+          </div>
+
+          <div className="row">
+            <button type="submit">Submit</button>
+            <input type="checkbox" name="tooltipEnabled" value={this.state.tooltipEnabled} onChange={this.handleChange} /> Enable Validation Tooltip
+          </div>
+        </form>
+      )
+    }
+  }
+
+  return (
+    <Form />
+  );
+};
+
 storiesOf("Validation/HTML5", module)
   .add("required", () => html5RequiredInput())
   .add("email", () => html5EmailInput())
@@ -145,3 +196,6 @@ storiesOf("Validation/Throtteled", module)
   .add("by 100ms", () => throttleValidationBy(100))
   .add("by 500ms", () => throttleValidationBy(500))
   .add("by 1s", () => throttleValidationBy(1000));
+
+storiesOf("Validation/Use Cases", module)
+  .add("Password Confirmation", () => formWithControlledState());
