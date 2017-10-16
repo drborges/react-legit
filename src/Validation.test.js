@@ -115,25 +115,30 @@ describe("Validation", () => {
       });
     });
 
-    describe("debounced validation", () => {
-      it("ratelimits validation by debouncing the trigger event", () => {
+    describe("throttled validation", () => {
+      it("ratelimits validation by throttling the trigger event", () => {
         const handleSuccess = jest.fn((event) => event.target.value);
         const event1 = createEvent({ target: { value: 2 } });
         const event2 = createEvent({ target: { value: 4 } });
-        const wait = (delay) => new Promise((resolve, reject) => setTimeout(resolve, delay));
 
         const validation = mount(
-          <Validation rules={[nonZero, isEven]} onSuccess={handleSuccess} debounce={20}>
+          <Validation rules={[nonZero, isEven]} onSuccess={handleSuccess} throttle={20}>
             <input type="text" />
           </Validation>
         );
 
         const triggerValidation = validation.find("input").props().onChange;
         const validation1 = triggerValidation(event1);
-        const validation2 = wait(10).then(() => triggerValidation(event2));
+        const validation2 = triggerValidation(event2);
 
-        return Promise.all([ validation1, validation2 ]).then((results) => {
-          expect(results).toEqual([ event2.target.value, event2.target.value ]);
+        return validation1.catch((reason) => {
+          expect(reason).toEqual("");
+
+          return validation2.then((event) => {
+            expect(event).toEqual(event2.target.value);
+            expect(handleSuccess).toHaveBeenCalledWith(event2);
+            expect(handleSuccess).not.toHaveBeenCalledWith(event1);
+          });
         });
       });
     });

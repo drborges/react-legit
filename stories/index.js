@@ -70,6 +70,22 @@ const nonZeroAndEvenInput = () => {
   );
 };
 
+const githubUsernameInput = () => {
+  const githubUsernameExists = (event) => new Promise(async (resolve, reject) => {
+    const response = await fetch(`https://api.github.com/users/${event.target.value}`);
+    response.ok ?
+      resolve(event) :
+      reject(`Username '${event.target.value}' does not exist!`);
+  });
+
+  return (
+    <Validation rules={[ githubUsernameExists ]} throttle={700} onSuccess={action("Valid!")} onFailure={(e) => action(e.target.validationMessage)(e)}>
+      <label htmlFor="gh-username">Github Username: </label>
+      <input id="gh-username" type="text" required />
+    </Validation>
+  );
+};
+
 storiesOf("HTML5 Validation", module)
   .add("required", () => html5RequiredInput())
   .add("email", () => html5EmailInput())
@@ -83,4 +99,5 @@ storiesOf("Debounced Validation", module)
   .add("by 1s", () => debounceValidationBy(1000));
 
 storiesOf("Custom Validation", module)
-  .add("with multiple rules", () => nonZeroAndEvenInput());
+  .add("with multiple rules", () => nonZeroAndEvenInput())
+  .add("Github API validation", () => githubUsernameInput());

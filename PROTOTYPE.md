@@ -1,4 +1,4 @@
-### Config
+### Global Config
 
 ```jsx
 import { Validation, Feedback } from "react-legit"
@@ -62,10 +62,10 @@ Validation.config.selectors = {
 </Validation>
 ```
 
-### Legit.Validation: Feedback Delay
+### Legit.Validation: Throttling
 
 ```jsx
-<Validation delay={500}>
+<Validation throttle={500}>
   <input type="number" name="grantor_id" required />
   <Feedback message="Grantor ID must be informed when a waiver response is provided" />
 </Validation>
@@ -94,7 +94,7 @@ Traverses the children elements (ignoring `Feedback`) looking for an input eleme
 Override the default `onChange` validation trigger.
 
 ```jsx
-<Validation trigger={["onFocus", "onBlur"]}>
+<Validation trigger="onBlur">
   <MyInputWrapper />
   <Feedback message="Grantor ID must be informed when a waiver response is provided" />
 </Validation>
