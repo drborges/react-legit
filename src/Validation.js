@@ -6,6 +6,7 @@ import validate from "./validate";
 class Validation extends React.Component {
   static defaultProps = {
     throttle: 0,
+    disabled: false,
     trigger: "onChange",
     rules: [(event) => Promise.resolve(event)],
     tooltipEnabled: false,

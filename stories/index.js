@@ -14,6 +14,43 @@ const html5RequiredInput = () => (
   </Validation>
 );
 
+const html5RequiredInputCheckbox = () => (
+  <Validation onSuccess={action("Valid!")} onFailure={(e) => action(e.target.validationMessage)(e)}>
+    <label htmlFor="username">* Username: </label>
+    <input type="checkbox" name="username" value="1" required />drborges
+    <input type="checkbox" name="username" value="2" required />diego
+    <input type="checkbox" name="username" value="3" required />borges
+  </Validation>
+);
+
+const html5RequiredInputRadio = () => (
+  <Validation onSuccess={action("Valid!")} onFailure={(e) => action(e.target.validationMessage)(e)}>
+    <label htmlFor="username">* Username: </label>
+    <input type="radio" name="username" value="1" required />drborges
+    <input type="radio" name="username" value="2" required />diego
+    <input type="radio" name="username" value="3" required />borges
+  </Validation>
+);
+
+const html5RequiredSelect = () => (
+  <Validation onSuccess={action("Valid!")} onFailure={(e) => action(e.target.validationMessage)(e)}>
+    <label htmlFor="username">* Username: </label>
+    <select required>
+      <option />
+      <option value="1">drborges</option>
+      <option value="2">diego</option>
+      <option value="3">borges</option>
+    </select>
+  </Validation>
+);
+
+const html5RequiredTextarea = () => (
+  <Validation onSuccess={action("Valid!")} onFailure={(e) => action(e.target.validationMessage)(e)}>
+    <label htmlFor="username">* Username: </label>
+    <textarea required />
+  </Validation>
+);
+
 const html5EmailInput = () => (
   <Validation onSuccess={action("Valid!")} onFailure={(e) => action(e.target.validationMessage)(e)}>
     <label htmlFor="email">Email: </label>
@@ -42,8 +79,8 @@ const html5InputPattern = () => (
   </Validation>
 );
 
-const debounceValidationBy = (wait) => (
-  <Validation onSuccess={action("Valid!")} onFailure={(e) => action(e.target.validationMessage)(e)} debounce={wait}>
+const throttleValidationBy = (delay) => (
+  <Validation onSuccess={action("Valid!")} onFailure={(e) => action(e.target.validationMessage)(e)} throttle={delay}>
     <label htmlFor="username">* Username: </label>
     <input id="username" type="text" minLength={3} maxLength={10} />
   </Validation>
@@ -86,18 +123,25 @@ const githubUsernameInput = () => {
   );
 };
 
-storiesOf("HTML5 Validation", module)
+storiesOf("Validation/HTML5", module)
   .add("required", () => html5RequiredInput())
   .add("email", () => html5EmailInput())
   .add("url", () => html5URLInput())
   .add("number", () => html5NumberInput())
   .add("input pattern", () => html5InputPattern());
 
-storiesOf("Debounced Validation", module)
-  .add("by 100ms", () => debounceValidationBy(100))
-  .add("by 500ms", () => debounceValidationBy(500))
-  .add("by 1s", () => debounceValidationBy(1000));
-
-storiesOf("Custom Validation", module)
+storiesOf("Validation/Custom", module)
   .add("with multiple rules", () => nonZeroAndEvenInput())
   .add("Github API validation", () => githubUsernameInput());
+
+storiesOf("Validation/Supported Fields", module)
+  .add("input", () => html5RequiredInput())
+  .add("checkbox", () => html5RequiredInputCheckbox())
+  .add("radio", () => html5RequiredInputRadio())
+  .add("select", () => html5RequiredSelect())
+  .add("textarea", () => html5RequiredTextarea());
+
+storiesOf("Validation/Throtteled", module)
+  .add("by 100ms", () => throttleValidationBy(100))
+  .add("by 500ms", () => throttleValidationBy(500))
+  .add("by 1s", () => throttleValidationBy(1000));

@@ -15,11 +15,7 @@ describe("Validation", () => {
     );
   });
 
-  describe("feedback delay", () => {});
-  describe("throtteling", () => {});
-  describe("traversing subtree", () => {});
-
-  describe("activation", () => {
+  describe("#disabled", () => {
     it("disables validation", () => {
       const validation = mount(
         <Validation disabled>
@@ -34,7 +30,7 @@ describe("Validation", () => {
     });
   });
 
-  describe("native tooltip", () => {
+  describe("#enableTooltip", () => {
     it("disables tooltip by default", () => {
       const validation = mount(
         <Validation>
@@ -115,7 +111,7 @@ describe("Validation", () => {
       });
     });
 
-    describe("throttled validation", () => {
+    describe("#throttle", () => {
       it("ratelimits validation by throttling the trigger event", () => {
         const handleSuccess = jest.fn((event) => event.target.value);
         const event1 = createEvent({ target: { value: 2 } });
@@ -142,5 +138,8 @@ describe("Validation", () => {
         });
       });
     });
+
+    describe("feedback delay", () => {});
+    describe("traversing subtree", () => {});
   });
 });
