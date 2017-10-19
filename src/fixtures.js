@@ -8,6 +8,9 @@ const createEvent = ({ target } = { target: {}}) => ({
   }
 });
 
+const wait = (delay) => new Promise(resolve => setTimeout(resolve, delay));
+const delayedRule = (delay) => (event) => wait(delay);
+
 const nonZero = (event) => new Promise((resolve, reject) => {
   if (event.target.value !== 0) {
     resolve(event);
@@ -28,4 +31,5 @@ export {
   createEvent,
   nonZero,
   isEven,
+  delayedRule,
 }

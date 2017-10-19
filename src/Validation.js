@@ -12,6 +12,8 @@ class Validation extends React.Component {
     tooltipEnabled: false,
     onFailure: () => {},
     onSuccess: () => {},
+    onBegin: () => {},
+    onEnd: () => {},
   }
 
   validatable = (type) => [
@@ -30,9 +32,24 @@ class Validation extends React.Component {
     return React.cloneElement(element, {
       onInvalid: (event) => !this.props.enableTooltip && event.preventDefault(),
       [this.props.trigger]: (event) => {
+        // Allows safe access to event data within callbacks since React will
+        // reuse the event instance if not persisted.
         event.persist();
+
+        // Make sure existing trigger event handler isn't overriden.
         (element.props[this.props.trigger] || (() => {}))(event);
+
+        this.props.onBegin(event);
+
         return this.throttledValidate(event)
+          .then(() => {
+            this.props.onEnd(event);
+            return event;
+          })
+          .catch((error) => {
+            this.props.onEnd(event);
+            return event;
+          });
       },
     });
   }

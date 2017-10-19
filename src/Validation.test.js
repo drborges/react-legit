@@ -3,7 +3,7 @@ import { mount } from "enzyme";
 
 import Validation from "./Validation";
 
-import { createEvent, nonZero, isEven } from "./fixtures";
+import { createEvent, nonZero, isEven, delayedRule } from "./fixtures";
 
 describe("Validation", () => {
   it("renders without crashing", () => {
@@ -94,6 +94,56 @@ describe("Validation", () => {
       });
     });
 
+    describe("lifecycle", () => {
+      it("triggers lifecycle callbacks accordingly during validation", () => {
+        const handleValidationBegin = jest.fn();
+        const handleValidationEnd = jest.fn();
+        const event = createEvent({ target: { value: 1 } });
+
+        const validation = mount(
+          <Validation rules={[ delayedRule(1) ]}
+              onBegin={handleValidationBegin}
+              onEnd={handleValidationEnd}
+          >
+            <input type="text" />
+          </Validation>
+        )
+
+        const whenValidationEnd = validation.find("input").props().onChange(event);
+        expect(handleValidationBegin).toHaveBeenCalledWith(event);
+        expect(handleValidationEnd).not.toHaveBeenCalled();
+        return whenValidationEnd.then(() => {
+          expect(handleValidationEnd).toHaveBeenCalledWith(event);
+        });
+      });
+
+      it("signals validation end even upon errors", () => {
+        const handleSuccess = jest.fn(() => { throw "BOOM!" });
+        const handleFailure = jest.fn(() => { throw "BOOM!" });
+        const handleValidationBegin = jest.fn();
+        const handleValidationEnd = jest.fn();
+        const event = createEvent({ target: { value: 1 } });
+
+        const validation = mount(
+          <Validation rules={[ delayedRule(1) ]}
+              onBegin={handleValidationBegin}
+              onEnd={handleValidationEnd}
+              onSuccess={handleSuccess}
+              onFailure={handleFailure}
+          >
+            <input type="text" />
+          </Validation>
+        )
+
+        const whenValidationEnd = validation.find("input").props().onChange(event);
+        expect(handleValidationBegin).toHaveBeenCalledWith(event);
+        expect(handleValidationEnd).not.toHaveBeenCalled();
+        return whenValidationEnd.then(() => {
+          expect(handleSuccess).toHaveBeenCalled();
+          expect(handleValidationEnd).toHaveBeenCalledWith(event);
+        });
+      });
+    });
 
     describe("#trigger", () => {
       it("overrides validation trigger to be onBlur", () => {
