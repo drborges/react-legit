@@ -132,7 +132,8 @@ const formWithControlledState = () => {
 
   class Form extends React.Component {
     state = {
-      password: "",
+      eager: false,
+      password: "lol123",
       passwordConfirmation: "",
       tooltipEnabled: false,
     }
@@ -147,22 +148,32 @@ const formWithControlledState = () => {
       return (
         <form>
           <div className="row">
-            <Validation onFailure={(e) => action(e.target.validationMessage)(e)} enableTooltip={this.state.tooltipEnabled}>
+            <Validation
+                eager={this.state.eager}
+                onFailure={(e) => action(e.target.validationMessage)(e)}
+                enableTooltip={this.state.tooltipEnabled}
+            >
               <label htmlFor="username">* Password:</label>
               <input id="password" name="password" type="password" value={this.state.password} onChange={this.handleChange} required />
             </Validation>
           </div>
 
           <div className="row">
-            <Validation rules={[ validIf(value => value === this.state.password) ]} onFailure={(e) => action(e.target.validationMessage)(e)} enableTooltip={this.state.tooltipEnabled}>
+            <Validation
+                eager={this.state.eager}
+                rules={[ validIf(value => value === this.state.password) ]}
+                onFailure={(e) => action(e.target.validationMessage)(e)}
+                enableTooltip={this.state.tooltipEnabled}
+            >
               <label htmlFor="username">* Confirm: </label>
-              <input id="password-confirm" name="passwordConfirmation" type="password" value={this.state.passwordConfirmation} onChange={this.handleChange} required />
+              <input id="password-confirm" name="passwordConfirmation" type="password" value={this.state.passwordConfirmation} onChange={this.handleChange} />
             </Validation>
           </div>
 
           <div className="row">
             <button type="submit">Submit</button>
             <input type="checkbox" name="tooltipEnabled" value={this.state.tooltipEnabled} onChange={this.handleChange} /> Enable Validation Tooltip
+            <input type="checkbox" name="eager" value={this.state.eager} onChange={this.handleChange} /> Enable Eager Validation
           </div>
         </form>
       )

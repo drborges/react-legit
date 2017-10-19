@@ -1,23 +1,23 @@
-const setCustomValidity = (event) => (error) => {
-  event.target.setCustomValidity(error);
-  return event;
+const setCustomValidity = (target) => (error) => {
+  target.setCustomValidity(error);
+  return target;
 };
 
-const checkValidity = (event) => () => new Promise((resolve, reject) => {
-  if (event.target.checkValidity()) {
-    resolve(event);
+const checkValidity = (target) => () => new Promise((resolve, reject) => {
+  if (target.checkValidity()) {
+    resolve(target);
   } else {
-    reject(event);
+    reject(target);
   }
 });
 
-const apply = (event, rules) => {
-  event.target.setCustomValidity("");
-  return Promise.all(rules.map(rule => rule(event)));
+const apply = (target, rules) => {
+  target.setCustomValidity("");
+  return Promise.all(rules.map(rule => rule(target)));
 };
 
-const validate = (event, rules) => apply(event, rules)
-  .catch(setCustomValidity(event))
-  .then(checkValidity(event));
+const validate = (target, rules) => apply(target, rules)
+  .catch(setCustomValidity(target))
+  .then(checkValidity(target));
 
 export default validate;

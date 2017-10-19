@@ -3,7 +3,7 @@ import { mount } from "enzyme";
 
 import Validation from "./Validation";
 
-import { createEvent, nonZero, isEven, delayedRule } from "./fixtures";
+import { createEvent, nonZero, isEven, delayedRule, wait } from "./fixtures";
 
 describe("Validation", () => {
   it("renders without crashing", () => {
@@ -71,7 +71,7 @@ describe("Validation", () => {
         );
 
         return validation.find("input").props().onChange(event).then(() => {
-          expect(handleSuccess).toHaveBeenCalledWith(event);
+          expect(handleSuccess).toHaveBeenCalledWith(event.target);
         });
       });
     });
@@ -88,7 +88,7 @@ describe("Validation", () => {
         );
 
         return validation.find("input").props().onChange(event).then(() => {
-          expect(handleFailure).toHaveBeenCalledWith(event);
+          expect(handleFailure).toHaveBeenCalledWith(event.target);
           expect(event.target.validationMessage).toEqual("Must be an even number")
         });
       });
@@ -110,10 +110,10 @@ describe("Validation", () => {
         )
 
         const whenValidationEnd = validation.find("input").props().onChange(event);
-        expect(handleValidationBegin).toHaveBeenCalledWith(event);
+        expect(handleValidationBegin).toHaveBeenCalledWith(event.target);
         expect(handleValidationEnd).not.toHaveBeenCalled();
         return whenValidationEnd.then(() => {
-          expect(handleValidationEnd).toHaveBeenCalledWith(event);
+          expect(handleValidationEnd).toHaveBeenCalledWith(event.target);
         });
       });
 
@@ -136,11 +136,11 @@ describe("Validation", () => {
         )
 
         const whenValidationEnd = validation.find("input").props().onChange(event);
-        expect(handleValidationBegin).toHaveBeenCalledWith(event);
+        expect(handleValidationBegin).toHaveBeenCalledWith(event.target);
         expect(handleValidationEnd).not.toHaveBeenCalled();
         return whenValidationEnd.then(() => {
           expect(handleSuccess).toHaveBeenCalled();
-          expect(handleValidationEnd).toHaveBeenCalledWith(event);
+          expect(handleValidationEnd).toHaveBeenCalledWith(event.target);
         });
       });
     });
@@ -157,7 +157,7 @@ describe("Validation", () => {
         );
 
         return validation.find("input").props().onBlur(event).then(() => {
-          expect(handleSuccess).toHaveBeenCalledWith(event);
+          expect(handleSuccess).toHaveBeenCalledWith(event.target);
         });
       });
 
@@ -174,7 +174,7 @@ describe("Validation", () => {
 
         return validation.find("input").props().onChange(event).then(() => {
           expect(handleChange).toHaveBeenCalledWith(event);
-          expect(handleSuccess).toHaveBeenCalledWith(event);
+          expect(handleSuccess).toHaveBeenCalledWith(event.target);
         });
       })
     });
@@ -200,9 +200,35 @@ describe("Validation", () => {
 
           return validation2.then((event) => {
             expect(event).toEqual(event2.target.value);
-            expect(handleSuccess).toHaveBeenCalledWith(event2);
-            expect(handleSuccess).not.toHaveBeenCalledWith(event1);
+            expect(handleSuccess).toHaveBeenCalledWith(event2.target);
+            expect(handleSuccess).not.toHaveBeenCalledWith(event1.target);
           });
+        });
+      });
+    });
+
+    describe("#eager", () => {
+      fit("forces validation upon rendering", () => {
+        const handleSuccess = jest.fn();
+        const handleFailure = jest.fn();
+        const handleEnd = jest.fn();
+
+        const validation = mount(
+          <Validation
+              eager
+              rules={[isEven]}
+              onSuccess={handleSuccess}
+              onFailure={handleFailure}
+              onEnd={handleEnd}
+          >
+            <input type="text" value={2} />
+          </Validation>
+        );
+
+        return wait(50).then(() => {
+          expect(handleFailure).not.toHaveBeenCalled();
+          expect(handleEnd).toHaveBeenCalled();
+          expect(handleSuccess).toHaveBeenCalled();
         });
       });
     });

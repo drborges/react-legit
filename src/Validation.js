@@ -1,15 +1,17 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import throttle from "./throttle";
 
 import validate from "./validate";
 
 class Validation extends React.Component {
   static defaultProps = {
+    eager: false,
     throttle: 0,
     disabled: false,
     trigger: "onChange",
     rules: [(event) => Promise.resolve(event)],
-    tooltipEnabled: false,
+    enableTooltip: false,
     onFailure: () => {},
     onSuccess: () => {},
     onBegin: () => {},
@@ -22,36 +24,44 @@ class Validation extends React.Component {
     "textarea",
   ].indexOf(type) >= 0;
 
-  throttledValidate = throttle((event) => {
-    return validate(event, this.props.rules)
+  throttledValidate = throttle((target) => {
+    return validate(target, this.props.rules)
       .then(this.props.onSuccess)
       .catch(this.props.onFailure);
   }, this.props.throttle);
 
+  begin = (target) => {
+    this.props.onBegin(target);
+  }
+
+  end = (target) => () => {
+    this.props.onEnd(target);
+    return target;
+  }
+
+  performValidation = (target) => {
+    this.begin(target);
+    return this.throttledValidate(target)
+      .then(this.end(target))
+      .catch(this.end(target));
+  }
+
   withValidation = (element) => {
     return React.cloneElement(element, {
+      ref: (target) => this.target = target,
       onInvalid: (event) => !this.props.enableTooltip && event.preventDefault(),
       [this.props.trigger]: (event) => {
-        // Allows safe access to event data within callbacks since React will
-        // reuse the event instance if not persisted.
-        event.persist();
-
         // Make sure existing trigger event handler isn't overriden.
         (element.props[this.props.trigger] || (() => {}))(event);
-
-        this.props.onBegin(event);
-
-        return this.throttledValidate(event)
-          .then(() => {
-            this.props.onEnd(event);
-            return event;
-          })
-          .catch((error) => {
-            this.props.onEnd(event);
-            return event;
-          });
+        return this.performValidation(event.target);
       },
     });
+  }
+
+  componentDidMount() {
+    if (!this.props.disabled && this.props.eager && this.target) {
+      this.performValidation(this.target);
+    }
   }
 
   render() {
