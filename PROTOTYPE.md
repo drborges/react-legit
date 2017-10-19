@@ -100,6 +100,40 @@ Override the default `onChange` validation trigger.
 </Validation>
 ```
 
+### Legit.Validation: validation lifecycle
+
+
+```jsx
+const validationLifecycle = {
+  onBegin: (event) => {
+    this.setState({
+      validating: {
+        [event.target.name]: true,
+      }
+    })
+  },
+  onEnd: (event) => {
+    this.setState({
+      validating: {
+        [event.target.name]: false,
+      }
+    })
+  },
+}
+
+<Validation {...validationLifecycle}>
+  <input name="password" type="password" value={this.state.form.password} />
+</Validation>
+
+<Validation
+    {...validationLifecycle}
+    eager={this.state.validating.password}
+    rules={[ match((value) => value === this.state.form.password) ]}
+>
+  <input name="confirmPassword" type="password" value={this.state.form.confirmPassword} />
+</Validation>
+```
+
 ### Legit.Feedback
 
 ```jsx
