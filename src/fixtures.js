@@ -11,17 +11,17 @@ const createEvent = ({ target } = { target: {}}) => ({
 const wait = (delay) => new Promise(resolve => setTimeout(resolve, delay));
 const delayedRule = (delay) => (event) => wait(delay);
 
-const nonZero = (event) => new Promise((resolve, reject) => {
-  if (event.target.value !== 0) {
-    resolve(event);
+const nonZero = (value) => new Promise((resolve, reject) => {
+  if (value !== 0) {
+    resolve(value);
   } else {
     reject("Cannot be zero");
   }
 });
 
-const isEven = (event) => new Promise((resolve, reject) => {
-  if (event.target.value % 2 === 0) {
-    resolve(event);
+const isEven = (value) => new Promise((resolve, reject) => {
+  if (value % 2 === 0) {
+    resolve(value);
   } else {
     reject("Must be an even number");
   }

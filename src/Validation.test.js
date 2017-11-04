@@ -207,6 +207,21 @@ describe("Validation", () => {
       });
     });
 
+    xdescribe("#onRegister", () => {
+      it("calls onRegister callback when validation is", () => {
+        const validation = mount(
+          <div>
+            <Validation>
+              <input name="password" required value="password123" />
+            </Validation>
+            <Validation rules={[]}>
+              <input name="password" required value="password123" />
+            </Validation>
+          </div>
+        );
+      });
+    });
+
     describe("feedback delay", () => {});
     describe("traversing subtree", () => {});
   });

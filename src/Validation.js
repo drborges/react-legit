@@ -22,33 +22,30 @@ class Validation extends React.Component {
     "textarea",
   ].indexOf(type) >= 0;
 
-  throttledValidate = throttle((event) => {
-    return validate(event, this.props.rules)
+  throttledValidate = throttle(value => {
+    return validate(value, this.props.rules)
       .then(this.props.onSuccess)
       .catch(this.props.onFailure);
   }, this.props.throttle);
 
   withValidation = (element) => {
     return React.cloneElement(element, {
+      ref: (elem) => this.element = elem,
       onInvalid: (event) => !this.props.enableTooltip && event.preventDefault(),
       [this.props.trigger]: (event) => {
-        // Allows safe access to event data within callbacks since React will
-        // reuse the event instance if not persisted.
-        event.persist();
-
         // Make sure existing trigger event handler isn't overriden.
         (element.props[this.props.trigger] || (() => {}))(event);
 
-        this.props.onBegin(event);
+        this.props.onBegin(event.target);
 
-        return this.throttledValidate(event)
+        return this.throttledValidate(event.target.value)
           .then(() => {
-            this.props.onEnd(event);
-            return event;
+            this.props.onEnd(event.target);
+            return event.target;
           })
           .catch((error) => {
-            this.props.onEnd(event);
-            return event;
+            this.props.onEnd(event.target);
+            return event.target;
           });
       },
     });
