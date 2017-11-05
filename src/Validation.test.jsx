@@ -7,6 +7,45 @@ import { createEvent, nonZero, isEven, validIf, wait } from "./fixtures";
 
 describe("<Validation />", () => {
   describe("#rules", () => {
+    it("successfully validates textarea", () => {
+      const handleValidInput = jest.fn();
+      const handleValidationFinish = jest.fn();
+      const event = createEvent({ target: { value: 2 } });
+
+      const validation = mount(
+        <Validation rules={[nonZero, isEven]} onValid={handleValidInput} onFinish={handleValidationFinish}>
+          <textarea name="password" />
+        </Validation>
+      );
+
+      return validation.find("textarea").props().onChange(event).then(value => {
+        expect(value).toEqual(2);
+        expect(handleValidInput).toHaveBeenCalledWith(2);
+        expect(handleValidationFinish).toHaveBeenCalled();
+      });
+    });
+
+    it("successfully validates select element", () => {
+      const handleValidInput = jest.fn();
+      const handleValidationFinish = jest.fn();
+      const event = createEvent({ target: { value: 2 } });
+
+      const validation = mount(
+        <Validation rules={[nonZero, isEven]} onValid={handleValidInput} onFinish={handleValidationFinish}>
+          <select name="password">
+            <option value="1" />
+            <option value="2" />
+          </select>
+        </Validation>
+      );
+
+      return validation.find("select").props().onChange(event).then(value => {
+        expect(value).toEqual(2);
+        expect(handleValidInput).toHaveBeenCalledWith(2);
+        expect(handleValidationFinish).toHaveBeenCalled();
+      });
+    });
+
     it("successfully validates input field", () => {
       const handleValidInput = jest.fn();
       const handleValidationFinish = jest.fn();
