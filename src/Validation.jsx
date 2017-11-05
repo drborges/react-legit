@@ -15,26 +15,34 @@ class Validation extends React.Component {
     onValid: () => {},
     onInvalid: () => {},
     inputRef: () => {},
+    inputRefs: () => {},
     rules: [],
     throttle: 0,
     trigger: "onChange",
   }
 
+  inputRefs = [];
+
   throttledValidate = throttle(validate, this.props.throttle);
 
-  componentDidMount() {
+  bindValidationApi = (input) => {
     const { rules } = this.props;
     const { handleValidInput, handleInvalidInput, throttledValidate } = this;
 
-    this.props.inputRef(this.input);
-    this.input.validate = function(input = this) {
+    input.validate = function() {
       // NOTE: since this block is wrapped within a 'function', the 'this'
       // keyword is then scoped to the 'input' instance rather then to the
       // instance of 'Validation'.
-      return throttledValidate(input, rules)
+      return throttledValidate(this, rules)
         .then(handleValidInput)
         .catch(handleInvalidInput);
-    }
+    };
+  }
+
+  componentDidMount() {
+    this.props.inputRef(this.inputRefs[0]);
+    this.props.inputRefs(this.inputRefs);
+    this.inputRefs.forEach(inputRef => this.bindValidationApi(inputRef));
   }
 
   handleValidInput = (value) => {
@@ -52,24 +60,28 @@ class Validation extends React.Component {
   handleValidation = (childEventHandler = () => {}) => (event) => {
     // prevents existing event handlers from being overriden
     childEventHandler(event);
-    return this.input.validate(event.target);
+    !event.target.validate && this.bindValidationApi(event.target);
+    return event.target.validate();
   }
 
   render() {
     const {
       children,
       inputRef,
+      inputRefs,
       onFinish,
       onValid,
       onInvalid,
       rules,
+      throttle,
+      trigger,
       ...props,
     } = this.props;
 
     return React.Children.map(children, (child) => !validatable(child.type) ? child : React.cloneElement(child, {
       ...props,
       [this.props.trigger]: this.handleValidation(child.props[this.props.trigger]),
-      ref: (target) => this.input = target,
+      ref: (target) => this.inputRefs.push(target),
     }));
   }
 }

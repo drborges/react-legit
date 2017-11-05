@@ -98,6 +98,23 @@ describe("<Validation />", () => {
 
       expect(input.name).toEqual("password");
     });
+
+    it("allows referencing multiple underlying input elements", () => {
+      let checkboxes;
+
+      const validation = mount(
+        <Validation inputRefs={refs => checkboxes = refs}>
+          <label htmlFor="username">* Username: </label>
+          <input type="checkbox" name="username" value="1" required />drborges
+          <input type="checkbox" name="username" value="2" required />diego
+          <input type="checkbox" name="username" value="3" required />borges
+        </Validation>
+      );
+
+      expect(checkboxes[0].value).toEqual("1");
+      expect(checkboxes[1].value).toEqual("2");
+      expect(checkboxes[2].value).toEqual("3");
+    });
   });
 
   describe("#validate", () => {
