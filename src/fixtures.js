@@ -14,7 +14,7 @@ const validIf = (predicate, hint = "Validation failed predicate") => (value) => 
   } else {
     reject(hint);
   }
-})
+});
 
 const isEven = validIf(value => value % 2 === 0, "Must be an even number");
 const nonZero = validIf(value => value !== 0, "Cannot be zero");

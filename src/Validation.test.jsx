@@ -123,6 +123,21 @@ describe("<Validation />", () => {
         expect(value).toEqual(2);
       });
     });
+
+    it("does not override input existing event handlers", () => {
+      const handleChange = jest.fn();
+      const validation = mount(
+        <Validation rules={[nonZero, isEven]}>
+          <input name="age" onChange={handleChange} />
+        </Validation>
+      );
+
+      const event = createEvent({ target: { value: 2 }});
+      return validation.find("input").props().onChange(event).then(value => {
+        expect(value).toEqual(2);
+        expect(handleChange).toHaveBeenCalledWith(event);
+      });
+    });
   });
 
   describe("#throttle", () => {
@@ -154,7 +169,7 @@ describe("<Validation />", () => {
         return event2ChangePromises.then(value => {
           expect(value).toEqual(2);
           expect(handleValidInput).toHaveBeenCalledWith(2);
-        })
+        });
       });
     });
   });

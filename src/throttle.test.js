@@ -11,7 +11,7 @@ describe("throttle", () => {
       expect(error).toBeUndefined();
       return sumResult2.then(sum => {
         expect(sum).toEqual(4);
-      })
-    })
+      });
+    });
   });
 });

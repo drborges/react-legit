@@ -22,8 +22,9 @@ class Validation extends React.Component {
 
     this.props.inputRef(this.input);
     this.input.validate = function(input = this) {
-      // NOTE: 'this' at this point, references the actual input instance rather
-      // rather the 'Validation' component.
+      // NOTE: since this block is wrapped within a 'function', the 'this'
+      // keyword is then scoped to the 'input' instance rather then to the
+      // instance of 'Validation'.
       return throttledValidate(input, rules)
         .then(handleValidInput)
         .catch(handleInvalidInput);
@@ -49,7 +50,16 @@ class Validation extends React.Component {
   }
 
   render() {
-    const { children, inputRef, onFinish, onValid, ...props } = this.props;
+    const {
+      children,
+      inputRef,
+      onFinish,
+      onValid,
+      onInvalid,
+      rules,
+      ...props,
+    } = this.props;
+
     return React.Children.map(children, (child) => React.cloneElement(child, {
       ...props,
       [this.props.trigger]: this.handleValidation(child.props[this.props.trigger]),
