@@ -3,6 +3,12 @@ import React from "react";
 import throttle from "./throttle";
 import validate from "./validate";
 
+const validatable = (type) => [
+  "input",
+  "select",
+  "textarea",
+].indexOf(type) >= 0;
+
 class Validation extends React.Component {
   static defaultProps = {
     onFinish: () => {},
@@ -43,9 +49,9 @@ class Validation extends React.Component {
     return hint;
   }
 
-  handleValidation = (childEventHandler) => (event) => {
+  handleValidation = (childEventHandler = () => {}) => (event) => {
     // prevents existing event handlers from being overriden
-    childEventHandler && childEventHandler(event);
+    childEventHandler(event);
     return this.input.validate(event.target);
   }
 
@@ -60,7 +66,7 @@ class Validation extends React.Component {
       ...props,
     } = this.props;
 
-    return React.Children.map(children, (child) => React.cloneElement(child, {
+    return React.Children.map(children, (child) => !validatable(child.type) ? child : React.cloneElement(child, {
       ...props,
       [this.props.trigger]: this.handleValidation(child.props[this.props.trigger]),
       ref: (target) => this.input = target,
