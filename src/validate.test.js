@@ -2,7 +2,7 @@ import validate from "./validate";
 
 import { createEvent, nonZero, isEven } from "./fixtures";
 
-fdescribe("validate", () => {
+describe("validate", () => {
   it("resolves validation when all rules are resolved", () => {
     const event = createEvent({ target: { value: 2 } });
 

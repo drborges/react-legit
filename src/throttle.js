@@ -4,7 +4,7 @@ const throttle = (fn, delay) => {
 
   return (...args) => {
     if (timeout) {
-      previousReject("");
+      previousReject();
       clearTimeout(timeout);
     }
 

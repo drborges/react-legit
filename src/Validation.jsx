@@ -1,5 +1,6 @@
 import React from "react";
 
+import throttle from "./throttle";
 import validate from "./validate";
 
 class Validation extends React.Component {
@@ -9,16 +10,21 @@ class Validation extends React.Component {
     onInvalid: () => {},
     inputRef: () => {},
     rules: [],
+    throttle: 0,
     trigger: "onChange",
   }
 
+  throttledValidate = throttle(validate, this.props.throttle);
+
   componentDidMount() {
     const { rules } = this.props;
-    const { handleValidInput, handleInvalidInput } = this;
+    const { handleValidInput, handleInvalidInput, throttledValidate } = this;
 
     this.props.inputRef(this.input);
     this.input.validate = function(input = this) {
-      return validate(input, rules)
+      // NOTE: 'this' at this point, references the actual input instance rather
+      // rather the 'Validation' component.
+      return throttledValidate(input, rules)
         .then(handleValidInput)
         .catch(handleInvalidInput);
     }

@@ -25,7 +25,7 @@ describe("<Validation />", () => {
       });
     });
 
-    fit("fails validation of input field", () => {
+    it("fails validation of input field", () => {
       const handleInvalidInput = jest.fn();
       const handleValidationFinish = jest.fn();
 
@@ -121,6 +121,40 @@ describe("<Validation />", () => {
       const event = createEvent({ target: { value: 2 }});
       return validation.find("input").props().onBlur(event).then(value => {
         expect(value).toEqual(2);
+      });
+    });
+  });
+
+  describe("#throttle", () => {
+    it("throttles validation to a given delay", () => {
+      const handleInvalidInput = jest.fn();
+      const handleValidInput = jest.fn();
+      const validation = mount(
+        <Validation
+            onInvalid={handleInvalidInput}
+            onValid={handleValidInput}
+            rules={[nonZero, isEven]}
+            throttle={300}
+        >
+          <input name="age" />
+        </Validation>
+      );
+
+      const input = validation.find("input");
+      const event1 = createEvent({ target: { value: 1 }});
+      const event2 = createEvent({ target: { value: 2 }});
+      const event1ChangePromises = input.props().onChange(event1);
+      const event2ChangePromises = input.props().onChange(event2);
+
+      return event1ChangePromises.then(error => {
+        expect(error).toBeUndefined();
+        expect(handleInvalidInput).toHaveBeenCalledWith(undefined);
+        expect(handleValidInput).not.toHaveBeenCalled();
+
+        return event2ChangePromises.then(value => {
+          expect(value).toEqual(2);
+          expect(handleValidInput).toHaveBeenCalledWith(2);
+        })
       });
     });
   });
