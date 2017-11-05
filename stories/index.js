@@ -124,17 +124,21 @@ const githubUsernameInput = () => {
 };
 
 const formWithControlledState = () => {
-  const validIf = (predicate) => (event) => new Promise((resolve, reject) => {
-    predicate(event.target.value) ?
-      resolve(event) :
-      reject(`Value '${event.target.value}' does not match predicate!`);
+  const validIf = (predicate) => (value) => new Promise((resolve, reject) => {
+    predicate(value) ?
+      resolve(value) :
+      reject(`Value '${value}' does not match predicate!`);
   });
 
   class Form extends React.Component {
     state = {
-      password: "",
-      passwordConfirmation: "",
-      tooltipEnabled: false,
+      password: "pass123",
+      passwordConfirmation: "pass123",
+    }
+
+    inputRefs = {
+      passwordInput: null,
+      passwordConfirmation: null,
     }
 
     handleChange = (event) => {
@@ -146,23 +150,22 @@ const formWithControlledState = () => {
     render() {
       return (
         <form>
-          <div className="row">
-            <Validation onFailure={(e) => action(e.target.validationMessage)(e)} enableTooltip={this.state.tooltipEnabled}>
-              <label htmlFor="username">* Password:</label>
-              <input id="password" name="password" type="password" value={this.state.password} onChange={this.handleChange} required />
-            </Validation>
-          </div>
+          <Validation
+              inputRef={input => this.inputRefs.passwordInput = input}
+              onFinish={() => this.inputRefs.passwordConfirmation.validate()}
+            >
+            <input name="password" value={this.state.password} onChange={this.handleChange} required />
+          </Validation>
 
-          <div className="row">
-            <Validation rules={[ validIf(value => value === this.state.password) ]} onFailure={(e) => action(e.target.validationMessage)(e)} enableTooltip={this.state.tooltipEnabled}>
-              <label htmlFor="username">* Confirm: </label>
-              <input id="password-confirm" name="passwordConfirmation" type="password" value={this.state.passwordConfirmation} onChange={this.handleChange} required />
-            </Validation>
-          </div>
+          <Validation
+              inputRef={input => this.inputRefs.passwordConfirmation = input}
+              rules={[ validIf(value => value === this.state.password) ]}
+          >
+            <input name="passwordConfirmation" value={this.state.passwordConfirmation} onChange={this.handleChange} />
+          </Validation>
 
           <div className="row">
             <button type="submit">Submit</button>
-            <input type="checkbox" name="tooltipEnabled" value={this.state.tooltipEnabled} onChange={this.handleChange} /> Enable Validation Tooltip
           </div>
         </form>
       )
@@ -173,29 +176,29 @@ const formWithControlledState = () => {
     <Form />
   );
 };
-
-storiesOf("Validation/HTML5", module)
-  .add("required", () => html5RequiredInput())
-  .add("email", () => html5EmailInput())
-  .add("url", () => html5URLInput())
-  .add("number", () => html5NumberInput())
-  .add("input pattern", () => html5InputPattern());
-
-storiesOf("Validation/Custom", module)
-  .add("with multiple rules", () => nonZeroAndEvenInput())
-  .add("Github API validation", () => githubUsernameInput());
-
-storiesOf("Validation/Supported Fields", module)
-  .add("input", () => html5RequiredInput())
-  .add("checkbox", () => html5RequiredInputCheckbox())
-  .add("radio", () => html5RequiredInputRadio())
-  .add("select", () => html5RequiredSelect())
-  .add("textarea", () => html5RequiredTextarea());
-
-storiesOf("Validation/Throtteled", module)
-  .add("by 100ms", () => throttleValidationBy(100))
-  .add("by 500ms", () => throttleValidationBy(500))
-  .add("by 1s", () => throttleValidationBy(1000));
+//
+// storiesOf("Validation/HTML5", module)
+//   .add("required", () => html5RequiredInput())
+//   .add("email", () => html5EmailInput())
+//   .add("url", () => html5URLInput())
+//   .add("number", () => html5NumberInput())
+//   .add("input pattern", () => html5InputPattern());
+//
+// storiesOf("Validation/Custom", module)
+//   .add("with multiple rules", () => nonZeroAndEvenInput())
+//   .add("Github API validation", () => githubUsernameInput());
+//
+// storiesOf("Validation/Supported Fields", module)
+//   .add("input", () => html5RequiredInput())
+//   .add("checkbox", () => html5RequiredInputCheckbox())
+//   .add("radio", () => html5RequiredInputRadio())
+//   .add("select", () => html5RequiredSelect())
+//   .add("textarea", () => html5RequiredTextarea());
+//
+// storiesOf("Validation/Throtteled", module)
+//   .add("by 100ms", () => throttleValidationBy(100))
+//   .add("by 500ms", () => throttleValidationBy(500))
+//   .add("by 1s", () => throttleValidationBy(1000));
 
 storiesOf("Validation/Use Cases", module)
   .add("Password Confirmation", () => formWithControlledState());

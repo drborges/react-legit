@@ -1,13 +1,13 @@
 const setCustomValidity = (input) => (error) => {
   input.setCustomValidity(error);
-  return input;
+  throw error;
 };
 
 const checkValidity = (input) => () => new Promise((resolve, reject) => {
   if (input.checkValidity()) {
-    resolve(input);
+    resolve(input.value);
   } else {
-    reject(input);
+    reject(input.validationMessage);
   }
 });
 

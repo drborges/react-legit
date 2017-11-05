@@ -8,28 +8,24 @@ const createEvent = ({ target } = { target: {}}) => ({
   }
 });
 
+const validIf = (predicate, hint = "Validation failed predicate") => (value) => new Promise((resolve, reject) => {
+  if (predicate(value)) {
+    resolve(value);
+  } else {
+    reject(hint);
+  }
+})
+
+const isEven = validIf(value => value % 2 === 0, "Must be an even number");
+const nonZero = validIf(value => value !== 0, "Cannot be zero");
 const wait = (delay) => new Promise(resolve => setTimeout(resolve, delay));
 const delayedRule = (delay) => (event) => wait(delay);
 
-const nonZero = (value) => new Promise((resolve, reject) => {
-  if (value !== 0) {
-    resolve(value);
-  } else {
-    reject("Cannot be zero");
-  }
-});
-
-const isEven = (value) => new Promise((resolve, reject) => {
-  if (value % 2 === 0) {
-    resolve(value);
-  } else {
-    reject("Must be an even number");
-  }
-});
-
 export {
   createEvent,
+  validIf,
   nonZero,
   isEven,
+  wait,
   delayedRule,
 }

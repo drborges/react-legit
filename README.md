@@ -7,3 +7,5 @@
 3. Write a descent README :~
 4. Publish lib in NPM registry.
 5. Write spec for throttle.js.
+6. Use refs to retain a reference to the input DOM element within the Validation component so we may perform eager validation.
+7. Pass the DOM element to validation callbacks instead of Event objects?
