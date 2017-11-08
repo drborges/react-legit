@@ -3,9 +3,9 @@ import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import { linkTo } from "@storybook/addon-links";
 
-import Validation from "../src/Validation";
+import Validation from "Validation";
 
-import styles from "./styles.scss";
+import styles from "Validation/styles.scss";
 
 const html5RequiredInput = () => (
   <Validation onValid={(value) => action("Valid:", value)} onInvalid={(hint) => action(hint)()}>

@@ -1,9 +1,9 @@
 import React from "react";
 import { mount } from "enzyme";
 
-import Validation from "./Validation";
+import Validation from "Validation";
 
-import { createEvent, nonZero, isEven, validIf, wait } from "./fixtures";
+import { createEvent, nonZero, isEven, validIf, wait } from "fixtures";
 
 describe("<Validation />", () => {
   describe("#rules", () => {
