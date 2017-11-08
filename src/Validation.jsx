@@ -34,8 +34,8 @@ class Validation extends React.Component {
       // keyword is then scoped to the 'input' instance rather then to the
       // instance of 'Validation'.
       return throttledValidate(this, rules)
-        .then(handleValidInput)
-        .catch(handleInvalidInput);
+        .then(() => handleValidInput(this))
+        .catch(() => handleInvalidInput(this));
     };
   }
 
@@ -45,16 +45,16 @@ class Validation extends React.Component {
     this.inputRefs.forEach(inputRef => this.bindValidationApi(inputRef));
   }
 
-  handleValidInput = (value) => {
-    this.props.onValid(value);
-    this.props.onFinish();
-    return value;
+  handleValidInput = (input) => {
+    this.props.onValid(input);
+    this.props.onFinish(input);
+    return input;
   }
 
-  handleInvalidInput = (hint) => {
-    this.props.onInvalid(hint);
-    this.props.onFinish();
-    return hint;
+  handleInvalidInput = (input) => {
+    this.props.onInvalid(input);
+    this.props.onFinish(input);
+    return input;
   }
 
   handleValidation = (childEventHandler = () => {}) => (event) => {

@@ -10,7 +10,6 @@ describe("<Validation />", () => {
     it("successfully validates textarea", () => {
       const handleValidInput = jest.fn();
       const handleValidationFinish = jest.fn();
-      const event = createEvent({ target: { value: 2 } });
 
       const validation = mount(
         <Validation rules={[nonZero, isEven]} onValid={handleValidInput} onFinish={handleValidationFinish}>
@@ -18,17 +17,17 @@ describe("<Validation />", () => {
         </Validation>
       );
 
-      return validation.find("textarea").props().onChange(event).then(value => {
-        expect(value).toEqual(2);
-        expect(handleValidInput).toHaveBeenCalledWith(2);
-        expect(handleValidationFinish).toHaveBeenCalled();
+      const event = createEvent({ target: { value: 2 } });
+      return validation.find("textarea").props().onChange(event).then(input => {
+        expect(input).toEqual(event.target);
+        expect(handleValidInput).toHaveBeenCalledWith(event.target);
+        expect(handleValidationFinish).toHaveBeenCalledWith(event.target);
       });
     });
 
     it("successfully validates select element", () => {
       const handleValidInput = jest.fn();
       const handleValidationFinish = jest.fn();
-      const event = createEvent({ target: { value: 2 } });
 
       const validation = mount(
         <Validation rules={[nonZero, isEven]} onValid={handleValidInput} onFinish={handleValidationFinish}>
@@ -39,17 +38,17 @@ describe("<Validation />", () => {
         </Validation>
       );
 
-      return validation.find("select").props().onChange(event).then(value => {
-        expect(value).toEqual(2);
-        expect(handleValidInput).toHaveBeenCalledWith(2);
-        expect(handleValidationFinish).toHaveBeenCalled();
+      const event = createEvent({ target: { value: 2 } });
+      return validation.find("select").props().onChange(event).then(input => {
+        expect(input).toEqual(event.target);
+        expect(handleValidInput).toHaveBeenCalledWith(event.target);
+        expect(handleValidationFinish).toHaveBeenCalledWith(event.target);
       });
     });
 
     it("successfully validates input field", () => {
       const handleValidInput = jest.fn();
       const handleValidationFinish = jest.fn();
-      const event = createEvent({ target: { value: 2 } });
 
       const validation = mount(
         <Validation rules={[nonZero, isEven]} onValid={handleValidInput} onFinish={handleValidationFinish}>
@@ -57,10 +56,11 @@ describe("<Validation />", () => {
         </Validation>
       );
 
-      return validation.find("input").props().onChange(event).then(value => {
-        expect(value).toEqual(2);
-        expect(handleValidInput).toHaveBeenCalledWith(2);
-        expect(handleValidationFinish).toHaveBeenCalled();
+      const event = createEvent({ target: { value: 2 } });
+      return validation.find("input").props().onChange(event).then(input => {
+        expect(input).toEqual(event.target);
+        expect(handleValidInput).toHaveBeenCalledWith(event.target);
+        expect(handleValidationFinish).toHaveBeenCalledWith(event.target);
       });
     });
 
@@ -75,12 +75,11 @@ describe("<Validation />", () => {
       );
 
       const event = createEvent({ target: { value: 1 } });
-      return validation.find("input").props().onChange(event).then(hint => {
-        const expectedHint = "Must be an even number";
-        expect(hint).toEqual(expectedHint);
+      return validation.find("input").props().onChange(event).then(input => {
+        expect(input.validationMessage).toEqual("Must be an even number");
         return wait(50).then(() => {
-          expect(handleInvalidInput).toHaveBeenCalledWith(expectedHint);
-          expect(handleValidationFinish).toHaveBeenCalled();
+          expect(handleInvalidInput).toHaveBeenCalledWith(event.target);
+          expect(handleValidationFinish).toHaveBeenCalledWith(event.target);
         });
       });
     });
@@ -135,20 +134,20 @@ describe("<Validation />", () => {
 
   describe("cross input validation", () => {
     it("successful", () => {
-      let passwordInput, passwordConfirmationChange;
+      let passwordInput, passwordConfirmationInput;
       const handleSuccess = jest.fn();
 
       const form = mount(
         <form>
           <Validation
               inputRef={input => passwordInput = input}
-              onFinish={() => passwordConfirmationChange.validate()}
+              onFinish={() => passwordConfirmationInput.validate()}
           >
             <input name="password" value="pass123" required />
           </Validation>
 
           <Validation
-              inputRef={input => passwordConfirmationChange = input}
+              inputRef={input => passwordConfirmationInput = input}
               rules={[ validIf(value => value === passwordInput.value) ]}
               onValid={handleSuccess}
           >
@@ -158,9 +157,10 @@ describe("<Validation />", () => {
       );
 
       const event = createEvent({ target: { value: "lol123" } });
-      return form.find("[name='password']").props().onChange(event).then(val => {
+      return form.find("[name='password']").props().onChange(event).then(input => {
+        expect(input).toEqual(event.target);
         return wait(50).then(() => {
-          expect(handleSuccess).toHaveBeenCalledWith("pass123");
+          expect(handleSuccess).toHaveBeenCalledWith(passwordConfirmationInput);
         });
       });
     });
@@ -175,8 +175,8 @@ describe("<Validation />", () => {
       );
 
       const event = createEvent({ target: { value: 2 }});
-      return validation.find("input").props().onBlur(event).then(value => {
-        expect(value).toEqual(2);
+      return validation.find("input").props().onBlur(event).then(input => {
+        expect(input).toEqual(event.target);
       });
     });
 
@@ -189,8 +189,8 @@ describe("<Validation />", () => {
       );
 
       const event = createEvent({ target: { value: 2 }});
-      return validation.find("input").props().onChange(event).then(value => {
-        expect(value).toEqual(2);
+      return validation.find("input").props().onChange(event).then(input => {
+        expect(input).toEqual(event.target);
         expect(handleChange).toHaveBeenCalledWith(event);
       });
     });
@@ -217,14 +217,14 @@ describe("<Validation />", () => {
       const event1ChangePromises = input.props().onChange(event1);
       const event2ChangePromises = input.props().onChange(event2);
 
-      return event1ChangePromises.then(error => {
-        expect(error).toBeUndefined();
-        expect(handleInvalidInput).toHaveBeenCalledWith(undefined);
+      return event1ChangePromises.then(input => {
+        expect(input).toEqual(event1.target);
+        expect(handleInvalidInput).toHaveBeenCalledWith(event1.target);
         expect(handleValidInput).not.toHaveBeenCalled();
 
-        return event2ChangePromises.then(value => {
-          expect(value).toEqual(2);
-          expect(handleValidInput).toHaveBeenCalledWith(2);
+        return event2ChangePromises.then(input => {
+          expect(input).toEqual(event2.target);
+          expect(handleValidInput).toHaveBeenCalledWith(event2.target);
         });
       });
     });
