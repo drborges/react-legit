@@ -31,15 +31,12 @@ class Validation extends React.Component {
     const { throttledValidate } = this;
 
     input.validate = function() {
-      // NOTE: since this block is wrapped within a 'function', the 'this'
-      // keyword is then scoped to the 'input' instance rather then to the
-      // instance of 'Validation'.
       return Promise.resolve()
-        .then(() => onStart(this))
-        .then(() => throttledValidate(this, rules))
-        .then(() => onValid(this))
+        .then(() => onStart(input))
+        .then(() => throttledValidate(input, rules))
+        .then(() => onValid(input))
         .catch((e) => (e !== error) && onInvalid(input))
-        .then(() => onFinish(this));
+        .then(() => onFinish(input));
     };
   }
 
