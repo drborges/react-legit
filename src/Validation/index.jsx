@@ -1,7 +1,7 @@
 import React from "react";
 
-import throttle from "throttle";
-import validate from "validate";
+import throttle from "../throttle";
+import validate from "../validate";
 
 const validatable = (type) => [
   "input",

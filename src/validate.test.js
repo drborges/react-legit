@@ -1,6 +1,5 @@
-import validate from "validate";
-
-import { createEvent, nonZero, isEven } from "fixtures";
+import validate from "./validate";
+import { createEvent, nonZero, isEven } from "./fixtures";
 
 describe("validate", () => {
   it("resolves validation when all rules are resolved", () => {
