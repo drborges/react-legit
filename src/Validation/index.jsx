@@ -11,6 +11,7 @@ const validatable = (type) => [
 
 class Validation extends React.Component {
   static defaultProps = {
+    onStart: () => {},
     onFinish: () => {},
     onValid: () => {},
     onInvalid: () => {},
@@ -26,16 +27,19 @@ class Validation extends React.Component {
   throttledValidate = throttle(validate, this.props.throttle);
 
   bindValidationApi = (input) => {
-    const { rules } = this.props;
-    const { handleValidInput, handleInvalidInput, throttledValidate } = this;
+    const { rules, onStart, onFinish, onValid, onInvalid } = this.props;
+    const { throttledValidate } = this;
 
     input.validate = function() {
       // NOTE: since this block is wrapped within a 'function', the 'this'
       // keyword is then scoped to the 'input' instance rather then to the
       // instance of 'Validation'.
-      return throttledValidate(this, rules)
-        .then(() => handleValidInput(this))
-        .catch(() => handleInvalidInput(this));
+      return Promise.resolve()
+        .then(() => onStart(this))
+        .then(() => throttledValidate(this, rules))
+        .then(() => onValid(this))
+        .catch(() => onInvalid(this))
+        .then(() => onFinish(this));
     };
   }
 
@@ -43,18 +47,6 @@ class Validation extends React.Component {
     this.props.inputRef(this.inputRefs[0]);
     this.props.inputRefs(this.inputRefs);
     this.inputRefs.forEach(inputRef => this.bindValidationApi(inputRef));
-  }
-
-  handleValidInput = (input) => {
-    this.props.onValid(input);
-    this.props.onFinish(input);
-    return input;
-  }
-
-  handleInvalidInput = (input) => {
-    this.props.onInvalid(input);
-    this.props.onFinish(input);
-    return input;
   }
 
   handleValidation = (childEventHandler = () => {}) => (event) => {
@@ -69,6 +61,7 @@ class Validation extends React.Component {
       children,
       inputRef,
       inputRefs,
+      onStart,
       onFinish,
       onValid,
       onInvalid,
