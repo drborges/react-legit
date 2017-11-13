@@ -5,14 +5,14 @@ import { linkTo } from "@storybook/addon-links";
 import Validation from "../Validation";
 
 export const html5RequiredInput = () => (
-  <Validation onValid={(value) => action("Valid:", value)} onInvalid={(hint) => action(hint)()}>
+  <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
     <label htmlFor="username">* Username: </label>
     <input id="username" type="text" required />
   </Validation>
 );
 
 export const html5RequiredInputCheckbox = () => (
-  <Validation onValid={(value) => action("Valid:", value)} onInvalid={(hint) => action(hint)()}>
+  <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
     <label htmlFor="username">* Username: </label>
     <input type="checkbox" name="username" value="1" required />drborges
     <input type="checkbox" name="username" value="2" required />diego
@@ -21,7 +21,7 @@ export const html5RequiredInputCheckbox = () => (
 );
 
 export const html5RequiredInputRadio = () => (
-  <Validation onValid={(value) => action("Valid:", value)} onInvalid={(hint) => action(hint)()}>
+  <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
     <label htmlFor="username">* Username: </label>
     <input type="radio" name="username" value="1" required />drborges
     <input type="radio" name="username" value="2" required />diego
@@ -30,7 +30,7 @@ export const html5RequiredInputRadio = () => (
 );
 
 export const html5RequiredSelect = () => (
-  <Validation onValid={(value) => action("Valid:", value)} onInvalid={(hint) => action(hint)()}>
+  <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
     <label htmlFor="username">* Username: </label>
     <select required>
       <option />
@@ -42,42 +42,42 @@ export const html5RequiredSelect = () => (
 );
 
 export const html5RequiredTextarea = () => (
-  <Validation onValid={(value) => action("Valid:", value)} onInvalid={(hint) => action(hint)()}>
+  <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
     <label htmlFor="username">* Username: </label>
     <textarea required />
   </Validation>
 );
 
 export const html5EmailInput = () => (
-  <Validation onValid={(value) => action("Valid:", value)} onInvalid={(hint) => action(hint)()}>
+  <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
     <label htmlFor="email">Email: </label>
     <input id="email" type="email" />
   </Validation>
 );
 
 export const html5URLInput = () => (
-  <Validation onValid={(value) => action("Valid:", value)} onInvalid={(hint) => action(hint)()}>
+  <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
     <label htmlFor="website">Website: </label>
     <input id="website" type="url" />
   </Validation>
 );
 
 export const html5NumberInput = () => (
-  <Validation onValid={(value) => action("Valid:", value)} onInvalid={(hint) => action(hint)()}>
+  <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
     <label htmlFor="age">Age (between 18 and 40): </label>
     <input id="age" type="number" min="18" max="40" step="1" />
   </Validation>
 );
 
 export const html5InputPattern = () => (
-  <Validation onValid={(value) => action("Valid:", value)} onInvalid={(hint) => action(hint)()}>
+  <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
     <label htmlFor="phone">Cell: </label>
     <input id="phone" type="text" pattern="\(\d\d\d\) \d\d\d-\d\d\d\d" placeholder="(ddd) ddd-dddd" />
   </Validation>
 );
 
 export const throttleValidationBy = (delay) => (
-  <Validation onValid={(value) => action("Valid:", value)} onInvalid={(hint) => action(hint)()} throttle={delay}>
+  <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()} throttle={delay}>
     <label htmlFor="username">* Username: </label>
     <input id="username" type="text" minLength={3} maxLength={10} />
   </Validation>
@@ -97,7 +97,7 @@ export const nonZeroAndEvenInput = () => {
   );
 
   return (
-    <Validation rules={[ nonZeroNumber, evenNumber ]} onValid={(value) => action("Valid:", value)} onInvalid={(hint) => action(hint)()}>
+    <Validation rules={[ nonZeroNumber, evenNumber ]} onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
       <label htmlFor="nonzero-even">Non-zero and even: </label>
       <input id="nonzero-even" type="number" />
     </Validation>
@@ -113,7 +113,7 @@ export const githubUsernameInput = () => {
   });
 
   return (
-    <Validation rules={[ githubUsernameExists ]} throttle={700} onValid={(value) => action("Valid:", value)} onInvalid={(hint) => action(hint)()}>
+    <Validation rules={[ githubUsernameExists ]} throttle={700} onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
       <label htmlFor="gh-username">Github Username: </label>
       <input id="gh-username" type="text" required />
     </Validation>
