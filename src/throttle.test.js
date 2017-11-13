@@ -1,4 +1,4 @@
-import throttle from "./throttle";
+import throttle, { error } from "./throttle";
 
 describe("throttle", () => {
   it("throttles function to a given delay", () => {
@@ -8,7 +8,7 @@ describe("throttle", () => {
     const sumResult2 = throttledSum(2, 2);
 
     return sumResult1.catch(error => {
-      expect(error).toBeUndefined();
+      expect(error).toEqual(error);
       return sumResult2.then(sum => {
         expect(sum).toEqual(4);
       });

@@ -1,10 +1,12 @@
+export const error = new Error("Promise was throttled");
+
 const throttle = (fn, delay) => {
   let timeout;
   let previousReject;
 
   return (...args) => {
     if (timeout) {
-      previousReject();
+      previousReject(error);
       clearTimeout(timeout);
     }
 

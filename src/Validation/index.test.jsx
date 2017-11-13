@@ -65,11 +65,9 @@ describe("<Validation />", () => {
       );
 
       const event = createEvent({ target: { value: 1 } });
-      return validation.find("input").props().onChange(event).then(() => {
+      return validation.find("input").props().onChange(event).then(wait(50)).then(() => {
         expect(event.target.validationMessage).toEqual("Must be an even number");
-        return wait(50).then(() => {
-          expect(handleInvalidInput).toHaveBeenCalledWith(event.target);
-        });
+        expect(handleInvalidInput).toHaveBeenCalledWith(event.target);
       });
     });
   });
@@ -203,8 +201,8 @@ describe("<Validation />", () => {
       const event1ChangePromises = input.props().onChange(event1);
       const event2ChangePromises = input.props().onChange(event2);
 
-      return event1ChangePromises.then(() => {
-        expect(handleInvalidInput).toHaveBeenCalledWith(event1.target);
+      return event1ChangePromises.then(wait(50)).then(() => {
+        expect(handleInvalidInput).not.toHaveBeenCalledWith(event1.target);
         expect(handleValidInput).not.toHaveBeenCalled();
 
         return event2ChangePromises.then(() => {

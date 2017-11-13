@@ -1,6 +1,6 @@
 import React from "react";
 
-import throttle from "../throttle";
+import throttle, { error } from "../throttle";
 import validate from "../validate";
 
 const validatable = (type) => [
@@ -38,7 +38,7 @@ class Validation extends React.Component {
         .then(() => onStart(this))
         .then(() => throttledValidate(this, rules))
         .then(() => onValid(this))
-        .catch(() => onInvalid(this))
+        .catch((e) => (e !== error) && onInvalid(input))
         .then(() => onFinish(this));
     };
   }
