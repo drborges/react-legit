@@ -3,28 +3,32 @@ import React from "react";
 import throttle, { PROMISE_THROTTLED } from "../throttle";
 import validate from "../validate";
 
-const validatable = (type) => [
-  "input",
-  "select",
-  "textarea",
-].indexOf(type) >= 0;
-
 class Validation extends React.Component {
   static defaultProps = {
     onStart: () => {},
     onFinish: () => {},
     onValid: () => {},
     onInvalid: () => {},
+    include: [],
     inputRef: () => {},
     inputRefs: () => {},
+    refPropName: "ref",
     rules: [],
     throttle: 0,
     trigger: "onChange",
   }
 
+  validatables = [
+    "input",
+    "select",
+    "textarea",
+  ].concat(this.props.include);
+
   inputRefs = [];
 
   throttledValidate = throttle(validate, this.props.throttle);
+
+  isValidatable = (type) => this.validatables.indexOf(type) >= 0;
 
   bindValidationApi = (input) => {
     const { rules, onStart, onFinish, onValid, onValidate, onInvalid } = this.props;
@@ -56,6 +60,7 @@ class Validation extends React.Component {
   render() {
     const {
       children,
+      include,
       inputRef,
       inputRefs,
       onStart,
@@ -63,16 +68,17 @@ class Validation extends React.Component {
       onValid,
       onValidate,
       onInvalid,
+      refPropName,
       rules,
       throttle,
       trigger,
       ...props,
     } = this.props;
 
-    return React.Children.map(children, (child) => !validatable(child.type) ? child : React.cloneElement(child, {
+    return React.Children.map(children, (child) => !this.isValidatable(child.type) ? child : React.cloneElement(child, {
       ...props,
-      [this.props.trigger]: this.handleValidation(child.props[this.props.trigger]),
-      ref: (target) => this.inputRefs.push(target),
+      [trigger]: this.handleValidation(child.props[trigger]),
+      [refPropName]: (target) => this.inputRefs.push(target),
     }));
   }
 }

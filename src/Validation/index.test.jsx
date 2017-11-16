@@ -232,6 +232,34 @@ describe("<Validation />", () => {
     });
   });
 
+  describe("#refPropName", () => {
+    class MyInput extends React.Component {
+      render() {
+        const { inputRef, ...props } = this.props;
+        return (
+          <input ref={inputRef} {...props} />
+        );
+      }
+    }
+
+    it("allows overriding the input ref key used to propate input ref callbacks", () => {
+      const handleValidInput = jest.fn();
+      const validation = mount(
+        <Validation rules={[nonZero, isEven]} include={[MyInput]}
+            onValid={handleValidInput}
+            refPropName="inputRef"
+        >
+          <MyInput name="age" />
+        </Validation>
+      );
+
+      const event = createEvent({ target: { value: 2 }});
+      validation.find("input").props().onChange(event).then(() => {
+        expect(handleValidInput).toHaveBeenCalledWith(event.target);
+      });
+    });
+  });
+
   describe("Validation Lifecycle", () => {
     it("executes lifecycle callbacks in order", () => {
       const executionPath = [];
