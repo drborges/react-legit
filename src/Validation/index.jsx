@@ -1,6 +1,6 @@
 import React from "react";
 
-import throttle, { error } from "../throttle";
+import throttle, { PROMISE_THROTTLED } from "../throttle";
 import validate from "../validate";
 
 const validatable = (type) => [
@@ -35,7 +35,7 @@ class Validation extends React.Component {
         .then(() => onStart(input))
         .then(() => validate(input, rules))
         .then(() => onValid(input))
-        .catch((e) => (e !== error) && onInvalid(input))
+        .catch((e) => (e !== PROMISE_THROTTLED) && onInvalid(input))
         .then(() => onFinish(input));
     };
   }
