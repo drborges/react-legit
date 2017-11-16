@@ -27,13 +27,13 @@ class Validation extends React.Component {
   throttledValidate = throttle(validate, this.props.throttle);
 
   bindValidationApi = (input) => {
-    const { rules, onStart, onFinish, onValid, onInvalid } = this.props;
-    const { throttledValidate } = this;
+    const { rules, onStart, onFinish, onValid, onValidate, onInvalid } = this.props;
+    const validate = onValidate || this.throttledValidate;
 
     input.validate = function() {
       return Promise.resolve()
         .then(() => onStart(input))
-        .then(() => throttledValidate(input, rules))
+        .then(() => validate(input, rules))
         .then(() => onValid(input))
         .catch((e) => (e !== error) && onInvalid(input))
         .then(() => onFinish(input));
@@ -61,6 +61,7 @@ class Validation extends React.Component {
       onStart,
       onFinish,
       onValid,
+      onValidate,
       onInvalid,
       rules,
       throttle,

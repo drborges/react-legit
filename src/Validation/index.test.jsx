@@ -212,6 +212,26 @@ describe("<Validation />", () => {
     });
   });
 
+  describe("#onValidate", () => {
+    it("allows overriding validation execution logic", () => {
+      const handleValidInput = jest.fn();
+      const validation = mount(
+        <Validation
+            onValid={handleValidInput}
+            onValidate={(input, rules) => Promise.resolve("always valid")}
+            rules={[nonZero, isEven]}
+        >
+          <input name="age" />
+        </Validation>
+      );
+
+      const event = createEvent({ target: { value: 1 }});
+      validation.find("input").props().onChange(event).then(() => {
+        expect(handleValidInput).toHaveBeenCalledWith(event.target);
+      });
+    });
+  });
+
   describe("Validation Lifecycle", () => {
     it("executes lifecycle callbacks in order", () => {
       const executionPath = [];
