@@ -1,3 +1,5 @@
+import validIf from "./rules/validIf";
+
 const createEvent = ({ target } = { target: {}}) => ({
   persist: jest.fn(),
   preventDefault: jest.fn(),
@@ -5,14 +7,6 @@ const createEvent = ({ target } = { target: {}}) => ({
     ...target,
     checkValidity: function() { return this.validationMessage === "" },
     setCustomValidity: function(error) { this.validationMessage = error },
-  }
-});
-
-const validIf = (predicate, hint = "Validation failed predicate") => (value) => new Promise((resolve, reject) => {
-  if (predicate(value)) {
-    resolve(value);
-  } else {
-    reject(hint);
   }
 });
 
