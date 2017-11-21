@@ -4,6 +4,8 @@ import throttle, { PROMISE_THROTTLED } from "../throttle";
 import validate from "../validate";
 
 class Validation extends React.Component {
+  state = {};
+
   static defaultProps = {
     onStart: () => {},
     onFinish: () => {},
@@ -33,8 +35,13 @@ class Validation extends React.Component {
   bindValidationApi = (input) => {
     const { rules, onStart, onFinish, onValid, onValidate, onInvalid } = this.props;
     const validate = onValidate || this.throttledValidate;
+    const self = this;
 
     input.validate = function() {
+      if (!self.state.dirty) {
+        self.setState({ dirty: true });
+      }
+
       return Promise.resolve()
         .then(() => onStart(input))
         .then(() => validate(input, rules))
@@ -75,8 +82,11 @@ class Validation extends React.Component {
       ...props,
     } = this.props;
 
+    const dirtyClass = this.state.dirty ? "dirty" : "";
+
     return React.Children.map(children, (child) => !this.isValidatable(child.type) ? child : React.cloneElement(child, {
       ...props,
+      className: `${dirtyClass} ${child.props.className || ""}`.trim(),
       [trigger]: this.handleValidation(child.props[trigger]),
       [refPropName]: (target) => this.inputRefs.push(target),
     }));

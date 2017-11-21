@@ -24,9 +24,9 @@ input, select {
   height: 20px;
 }
 
-input:invalid,
-select:invalid,
-textarea:invalid {
+input.dirty:invalid,
+select.dirty:invalid,
+textarea.dirty:invalid {
   outline: none;
   border: thin solid red;
   box-shadow: 0 0 10px red;
@@ -39,16 +39,16 @@ input[type=radio]:valid {
   box-shadow: none;
 }
 
-input[type=checkbox]:invalid:before,
-input[type=radio]:invalid:before {
+input[type=checkbox].dirty:invalid:before,
+input[type=radio].dirty:invalid:before {
   color: red;
   content: "* ";
   margin-left: -10px;
 }
 
-input:valid,
-select:valid,
-textarea:valid {
+input.dirty:valid,
+select.dirty:valid,
+textarea.dirty:valid {
   outline: none;
   border: thin solid green;
   box-shadow: 0 0 10px green;

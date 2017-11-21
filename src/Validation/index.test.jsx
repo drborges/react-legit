@@ -261,6 +261,27 @@ describe("<Validation />", () => {
   });
 
   describe("Validation Lifecycle", () => {
+    it("marks input field as dirty", () => {
+      const validation = mount(
+        <Validation rules={[nonZero, isEven]}>
+          <input name="password" />
+        </Validation>
+      );
+
+      const input = validation.find("input");
+
+      expect(input.className).toBeUndefined();
+
+      const event = createEvent({ target: { value: 2 } });
+
+      const changePromise = input.props().onChange(event);
+      validation.update();
+
+      return changePromise.then(() => {
+        expect(validation.find("input").props().className).toEqual("dirty");
+      });
+    });
+
     it("executes lifecycle callbacks in order", () => {
       const executionPath = [];
       const handleValidInput = jest.fn(() => executionPath.push("onValid"));
