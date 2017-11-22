@@ -20,7 +20,8 @@
     "postversion": "git push && git push --tags",
     "release-patch": "npm version patch -m",
     "release-minor": "npm version minor -m",
-    "release-major": "npm version major -m"
+    "release-major": "npm version major -m",
+    "publish": "npm publish ./"
   },
   "dependencies": {
     "react": "^16.1.1",
