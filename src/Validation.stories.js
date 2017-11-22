@@ -5,82 +5,113 @@ import { linkTo } from "@storybook/addon-links";
 import Validation from "../lib";
 
 export const html5RequiredInput = () => (
-  <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+  <div>
     <label htmlFor="username">* Username: </label>
-    <input id="username" type="text" required />
-  </Validation>
+    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+      <input id="username" type="text" required />
+    </Validation>
+  </div>
 );
 
 export const html5RequiredInputCheckbox = () => (
-  <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+  <div>
     <label htmlFor="username">* Username: </label>
-    <input type="checkbox" name="username" value="1" required />drborges
-    <input type="checkbox" name="username" value="2" required />diego
-    <input type="checkbox" name="username" value="3" required />borges
-  </Validation>
+
+    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+      <input type="checkbox" name="username" value="1" required />drborges
+    </Validation>
+
+    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+      <input type="checkbox" name="username" value="2" required />diego
+    </Validation>
+
+    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+      <input type="checkbox" name="username" value="3" required />borges
+    </Validation>
+  </div>
 );
 
 export const html5RequiredInputRadio = () => (
-  <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+  <div>
     <label htmlFor="username">* Username: </label>
-    <input type="radio" name="username" value="1" required />drborges
-    <input type="radio" name="username" value="2" required />diego
-    <input type="radio" name="username" value="3" required />borges
-  </Validation>
+    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+      <input type="radio" name="username" value="1" required />drborges
+    </Validation>
+    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+      <input type="radio" name="username" value="2" required />diego
+    </Validation>
+    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+      <input type="radio" name="username" value="3" required />borges
+    </Validation>
+  </div>
 );
 
 export const html5RequiredSelect = () => (
-  <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+  <div>
     <label htmlFor="username">* Username: </label>
-    <select required>
-      <option />
-      <option value="1">drborges</option>
-      <option value="2">diego</option>
-      <option value="3">borges</option>
-    </select>
-  </Validation>
+    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+      <select required>
+        <option />
+        <option value="1">drborges</option>
+        <option value="2">diego</option>
+        <option value="3">borges</option>
+      </select>
+    </Validation>
+  </div>
 );
 
 export const html5RequiredTextarea = () => (
-  <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+  <div>
     <label htmlFor="username">* Username: </label>
-    <textarea required />
-  </Validation>
+    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+      <textarea required />
+    </Validation>
+  </div>
 );
 
 export const html5EmailInput = () => (
-  <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+  <div>
     <label htmlFor="email">Email: </label>
-    <input id="email" type="email" />
-  </Validation>
+    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+      <input id="email" type="email" />
+    </Validation>
+  </div>
 );
 
 export const html5URLInput = () => (
-  <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+  <div>
     <label htmlFor="website">Website: </label>
-    <input id="website" type="url" />
-  </Validation>
+    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+      <input id="website" type="url" />
+    </Validation>
+  </div>
 );
 
 export const html5NumberInput = () => (
-  <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+  <div>
     <label htmlFor="age">Age (between 18 and 40): </label>
-    <input id="age" type="number" min="18" max="40" step="1" />
-  </Validation>
+    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+      <input id="age" type="number" min="18" max="40" step="1" />
+    </Validation>
+  </div>
 );
 
 export const html5InputPattern = () => (
-  <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+  <div>
     <label htmlFor="phone">Cell: </label>
-    <input id="phone" type="text" pattern="\(\d\d\d\) \d\d\d-\d\d\d\d" placeholder="(ddd) ddd-dddd" />
-  </Validation>
+    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+      <input id="phone" type="text" pattern="\(\d\d\d\) \d\d\d-\d\d\d\d" placeholder="(ddd) ddd-dddd" />
+    </Validation>
+  </div>
 );
 
 export const throttleValidationBy = (delay) => (
-  <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()} throttle={delay}>
+  <div>
     <label htmlFor="username">* Username: </label>
-    <input id="username" type="text" minLength={3} maxLength={10} />
-  </Validation>
+    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()} throttle={delay}>
+      <input id="username" type="text" minLength={3} maxLength={10} />
+    </Validation>
+  </div>
 );
 
 export const nonZeroAndEvenInput = () => {
@@ -97,26 +128,29 @@ export const nonZeroAndEvenInput = () => {
   );
 
   return (
-    <Validation rules={[ nonZeroNumber, evenNumber ]} onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+    <div>
       <label htmlFor="nonzero-even">Non-zero and even: </label>
-      <input id="nonzero-even" type="number" />
-    </Validation>
+      <Validation rules={[ nonZeroNumber, evenNumber ]} onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+        <input id="nonzero-even" type="number" />
+      </Validation>
+    </div>
   );
 };
 
 export const githubUsernameInput = () => {
-  const githubUsernameExists = (value) => new Promise(async (resolve, reject) => {
-    const response = await fetch(`https://api.github.com/users/${value}`);
-    response.ok ?
-      resolve(value) :
-      reject(`Username '${value}' does not exist!`);
+  const githubUsernameExists = (value) => new Promise((resolve, reject) => {
+    fetch(`https://api.github.com/users/${value}`).then(response => {
+      response.ok ? resolve(value) : reject(`Username '${value}' does not exist!`);
+    });
   });
 
   return (
-    <Validation rules={[ githubUsernameExists ]} throttle={700} onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+    <div>
       <label htmlFor="gh-username">Github Username: </label>
-      <input id="gh-username" type="text" required />
-    </Validation>
+      <Validation rules={[ githubUsernameExists ]} throttle={700} onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+        <input id="gh-username" type="text" required />
+      </Validation>
+    </div>
   );
 };
 

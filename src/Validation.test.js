@@ -86,23 +86,6 @@ describe("<Validation />", () => {
 
       expect(input.name).to.eq("password");
     });
-
-    it("allows referencing multiple underlying input elements", () => {
-      let checkboxes;
-
-      const validation = mount(
-        <Validation inputRefs={refs => checkboxes = refs}>
-          <label htmlFor="username">* Username: </label>
-          <input type="checkbox" name="username" value="1" required />drborges
-          <input type="checkbox" name="username" value="2" required />diego
-          <input type="checkbox" name="username" value="3" required />borges
-        </Validation>
-      );
-
-      expect(checkboxes[0].value).to.eq("1");
-      expect(checkboxes[1].value).to.eq("2");
-      expect(checkboxes[2].value).to.eq("3");
-    });
   });
 
   describe("#validate", () => {
@@ -247,7 +230,7 @@ describe("<Validation />", () => {
     it("allows overriding the input ref key used to propate input ref callbacks", () => {
       const handleValidInput = sinon.spy();
       const validation = mount(
-        <Validation rules={[nonZero, isEven]} include={[MyInput]}
+        <Validation rules={[nonZero, isEven]}
             onValid={handleValidInput}
             refPropName="inputRef"
         >
