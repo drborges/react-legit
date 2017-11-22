@@ -1,3 +1,4 @@
+import { expect } from "chai";
 import throttle, { PROMISE_THROTTLED } from "./throttle";
 
 describe("throttle", () => {
@@ -8,9 +9,9 @@ describe("throttle", () => {
     const sumResult2 = throttledSum(2, 2);
 
     return sumResult1.catch(error => {
-      expect(error).toEqual(PROMISE_THROTTLED);
+      expect(error).to.eq(PROMISE_THROTTLED);
       return sumResult2.then(sum => {
-        expect(sum).toEqual(4);
+        expect(sum).to.eq(4);
       });
     });
   });

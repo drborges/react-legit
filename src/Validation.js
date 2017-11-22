@@ -1,7 +1,7 @@
 import React from "react";
 
-import throttle, { PROMISE_THROTTLED } from "../throttle";
-import validate from "../validate";
+import throttle, { PROMISE_THROTTLED } from "./throttle";
+import validate from "./validate";
 
 class Validation extends React.Component {
   state = {};

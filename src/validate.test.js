@@ -1,12 +1,13 @@
+import { expect } from "chai";
 import validate from "./validate";
-import { createEvent, nonZero, isEven } from "./fixtures";
+import { createEvent, nonZero, isEven } from "./test.fixtures";
 
 describe("validate", () => {
   it("resolves validation when all rules are resolved", () => {
     const event = createEvent({ target: { value: 2 } });
 
     return validate(event.target, [nonZero, isEven]).then(value => {
-      expect(value).toEqual(2);
+      expect(value).to.eq(2);
     });
   });
 
@@ -14,7 +15,7 @@ describe("validate", () => {
     const event = createEvent({ target: { value: 1 } });
 
     return validate(event.target, [nonZero, isEven]).catch(hint => {
-      expect(hint).toEqual("Must be an even number");
+      expect(hint).to.eq("Must be an even number");
     });
   });
 });

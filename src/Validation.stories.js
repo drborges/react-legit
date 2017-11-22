@@ -2,7 +2,7 @@ import React from "react";
 import { action } from "@storybook/addon-actions";
 import { linkTo } from "@storybook/addon-links";
 
-import Validation from "../Validation";
+import Validation from "../lib";
 
 export const html5RequiredInput = () => (
   <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>

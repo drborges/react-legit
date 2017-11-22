@@ -1,8 +1,9 @@
+import sinon from "sinon";
 import validIf from "./rules/validIf";
 
 const createEvent = ({ target } = { target: {}}) => ({
-  persist: jest.fn(),
-  preventDefault: jest.fn(),
+  persist: sinon.spy(),
+  preventDefault: sinon.spy(),
   target: {
     ...target,
     checkValidity: function() { return this.validationMessage === "" },

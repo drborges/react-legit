@@ -14,7 +14,7 @@ import {
   html5RequiredTextarea,
   throttleValidationBy,
   formWithControlledState,
-} from "../src/Validation/stories.jsx";
+} from "../src/Validation.stories";
 
 import styles from "./styles.scss";
 

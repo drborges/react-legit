@@ -1,3 +1,4 @@
+import { expect } from "chai";
 import eq from "./eq";
 
 describe("eq", () => {
@@ -6,7 +7,7 @@ describe("eq", () => {
   describe("when value is valid", () => {
     it("resolves promise", () => {
       return validate(2).then(val => {
-        expect(val).toEqual(2);
+        expect(val).to.eq(2);
       });
     });
   });
@@ -14,13 +15,13 @@ describe("eq", () => {
   describe("when value is invalid", () => {
     it("resolves promise", () => {
       return validate(1).catch(hint => {
-        expect(hint).toEqual("not equal to 2");
+        expect(hint).to.eq("not equal to 2");
       });
     });
 
     it("customizes hint message", () => {
       return eq(2, "1 is not 2")(1).catch(hint => {
-        expect(hint).toEqual("1 is not 2");
+        expect(hint).to.eq("1 is not 2");
       });
     });
   });

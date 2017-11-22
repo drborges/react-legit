@@ -1,14 +1,16 @@
 import React from "react";
+import sinon from "sinon";
+import { expect } from "chai";
 import { mount } from "enzyme";
 
-import Validation from "../Validation";
+import Validation from "./Validation";
 
-import { createEvent, nonZero, isEven, validIf, wait } from "../fixtures";
+import { createEvent, nonZero, isEven, validIf, wait } from "./test.fixtures";
 
 describe("<Validation />", () => {
   describe("#rules", () => {
     it("successfully validates textarea", () => {
-      const handleValidInput = jest.fn();
+      const handleValidInput = sinon.spy();
 
       const validation = mount(
         <Validation rules={[nonZero, isEven]} onValid={handleValidInput}>
@@ -18,12 +20,12 @@ describe("<Validation />", () => {
 
       const event = createEvent({ target: { value: 2 } });
       return validation.find("textarea").props().onChange(event).then(() => {
-        expect(handleValidInput).toHaveBeenCalledWith(event.target);
+        expect(handleValidInput).to.have.been.calledWith(event.target);
       });
     });
 
     it("successfully validates select element", () => {
-      const handleValidInput = jest.fn();
+      const handleValidInput = sinon.spy();
 
       const validation = mount(
         <Validation rules={[nonZero, isEven]} onValid={handleValidInput}>
@@ -36,12 +38,12 @@ describe("<Validation />", () => {
 
       const event = createEvent({ target: { value: 2 } });
       return validation.find("select").props().onChange(event).then(() => {
-        expect(handleValidInput).toHaveBeenCalledWith(event.target);
+        expect(handleValidInput).to.have.been.calledWith(event.target);
       });
     });
 
     it("successfully validates input field", () => {
-      const handleValidInput = jest.fn();
+      const handleValidInput = sinon.spy();
 
       const validation = mount(
         <Validation rules={[nonZero, isEven]} onValid={handleValidInput}>
@@ -51,12 +53,12 @@ describe("<Validation />", () => {
 
       const event = createEvent({ target: { value: 2 } });
       return validation.find("input").props().onChange(event).then(() => {
-        expect(handleValidInput).toHaveBeenCalledWith(event.target);
+        expect(handleValidInput).to.have.been.calledWith(event.target);
       });
     });
 
     it("fails validation of input field", () => {
-      const handleInvalidInput = jest.fn();
+      const handleInvalidInput = sinon.spy();
 
       const validation = mount(
         <Validation rules={[nonZero, isEven]}  onInvalid={handleInvalidInput}>
@@ -66,8 +68,8 @@ describe("<Validation />", () => {
 
       const event = createEvent({ target: { value: 1 } });
       return validation.find("input").props().onChange(event).then(wait(50)).then(() => {
-        expect(event.target.validationMessage).toEqual("Must be an even number");
-        expect(handleInvalidInput).toHaveBeenCalledWith(event.target);
+        expect(event.target.validationMessage).to.eq("Must be an even number");
+        expect(handleInvalidInput).to.have.been.calledWith(event.target);
       });
     });
   });
@@ -82,7 +84,7 @@ describe("<Validation />", () => {
         </Validation>
       );
 
-      expect(input.name).toEqual("password");
+      expect(input.name).to.eq("password");
     });
 
     it("allows referencing multiple underlying input elements", () => {
@@ -97,9 +99,9 @@ describe("<Validation />", () => {
         </Validation>
       );
 
-      expect(checkboxes[0].value).toEqual("1");
-      expect(checkboxes[1].value).toEqual("2");
-      expect(checkboxes[2].value).toEqual("3");
+      expect(checkboxes[0].value).to.eq("1");
+      expect(checkboxes[1].value).to.eq("2");
+      expect(checkboxes[2].value).to.eq("3");
     });
   });
 
@@ -114,7 +116,7 @@ describe("<Validation />", () => {
       );
 
       return input.validate().catch(error => {
-        expect(error).toEqual("Must be an even number");
+        expect(error).to.eq("Must be an even number");
       });
     });
   });
@@ -122,7 +124,7 @@ describe("<Validation />", () => {
   describe("cross input validation", () => {
     it("successful", () => {
       let passwordInput, passwordConfirmationInput;
-      const handleValidInput = jest.fn();
+      const handleValidInput = sinon.spy();
 
       const form = mount(
         <form>
@@ -145,14 +147,14 @@ describe("<Validation />", () => {
 
       const event = createEvent({ target: { value: "lol123" } });
       return form.find("[name='password']").props().onChange(event).then(wait(50)).then(() => {
-        expect(handleValidInput).toHaveBeenCalledWith(passwordConfirmationInput);
+        expect(handleValidInput).to.have.been.calledWith(passwordConfirmationInput);
       });
     });
   });
 
   describe("#trigger", () => {
     it("overrides validation trigger event", () => {
-      const handleValidInput = jest.fn();
+      const handleValidInput = sinon.spy();
       const validation = mount(
         <Validation rules={[nonZero, isEven]} trigger="onBlur" onValid={handleValidInput}>
           <input name="age" />
@@ -161,12 +163,12 @@ describe("<Validation />", () => {
 
       const event = createEvent({ target: { value: 2 }});
       return validation.find("input").props().onBlur(event).then(() => {
-        expect(handleValidInput).toHaveBeenCalledWith(event.target);
+        expect(handleValidInput).to.have.been.calledWith(event.target);
       });
     });
 
     it("does not override input existing event handlers", () => {
-      const handleChange = jest.fn();
+      const handleChange = sinon.spy();
       const validation = mount(
         <Validation rules={[nonZero, isEven]}>
           <input name="age" onChange={handleChange} />
@@ -175,15 +177,15 @@ describe("<Validation />", () => {
 
       const event = createEvent({ target: { value: 2 }});
       return validation.find("input").props().onChange(event).then(() => {
-        expect(handleChange).toHaveBeenCalledWith(event);
+        expect(handleChange).to.have.been.calledWith(event);
       });
     });
   });
 
   describe("#throttle", () => {
     it("throttles validation to a given delay", () => {
-      const handleInvalidInput = jest.fn();
-      const handleValidInput = jest.fn();
+      const handleInvalidInput = sinon.spy();
+      const handleValidInput = sinon.spy();
       const validation = mount(
         <Validation
             onInvalid={handleInvalidInput}
@@ -202,11 +204,11 @@ describe("<Validation />", () => {
       const event2ChangePromises = input.props().onChange(event2);
 
       return event1ChangePromises.then(wait(50)).then(() => {
-        expect(handleInvalidInput).not.toHaveBeenCalledWith(event1.target);
-        expect(handleValidInput).not.toHaveBeenCalled();
+        expect(handleInvalidInput).to.have.not.been.calledWith(event1.target);
+        expect(handleValidInput).to.have.not.been.called;
 
         return event2ChangePromises.then(() => {
-          expect(handleValidInput).toHaveBeenCalledWith(event2.target);
+          expect(handleValidInput).to.have.been.calledWith(event2.target);
         });
       });
     });
@@ -214,7 +216,7 @@ describe("<Validation />", () => {
 
   describe("#onValidate", () => {
     it("allows overriding validation execution logic", () => {
-      const handleValidInput = jest.fn();
+      const handleValidInput = sinon.spy();
       const validation = mount(
         <Validation
             onValid={handleValidInput}
@@ -227,7 +229,7 @@ describe("<Validation />", () => {
 
       const event = createEvent({ target: { value: 1 }});
       validation.find("input").props().onChange(event).then(() => {
-        expect(handleValidInput).toHaveBeenCalledWith(event.target);
+        expect(handleValidInput).to.have.been.calledWith(event.target);
       });
     });
   });
@@ -243,7 +245,7 @@ describe("<Validation />", () => {
     }
 
     it("allows overriding the input ref key used to propate input ref callbacks", () => {
-      const handleValidInput = jest.fn();
+      const handleValidInput = sinon.spy();
       const validation = mount(
         <Validation rules={[nonZero, isEven]} include={[MyInput]}
             onValid={handleValidInput}
@@ -255,7 +257,7 @@ describe("<Validation />", () => {
 
       const event = createEvent({ target: { value: 2 }});
       validation.find("input").props().onChange(event).then(() => {
-        expect(handleValidInput).toHaveBeenCalledWith(event.target);
+        expect(handleValidInput).to.have.been.calledWith(event.target);
       });
     });
   });
@@ -270,7 +272,7 @@ describe("<Validation />", () => {
 
       const input = validation.find("input");
 
-      expect(input.className).toBeUndefined();
+      expect(input.className).to.be.undefined;
 
       const event = createEvent({ target: { value: 2 } });
 
@@ -278,15 +280,15 @@ describe("<Validation />", () => {
       validation.update();
 
       return changePromise.then(() => {
-        expect(validation.find("input").props().className).toEqual("dirty");
+        expect(validation.find("input").props().className).to.eq("dirty");
       });
     });
 
     it("executes lifecycle callbacks in order", () => {
       const executionPath = [];
-      const handleValidInput = jest.fn(() => executionPath.push("onValid"));
-      const handleValidationStart = jest.fn(() => executionPath.push("onStart"));
-      const handleValidationFinish = jest.fn(() => executionPath.push("onFinish"));
+      const handleValidInput = sinon.spy(() => executionPath.push("onValid"));
+      const handleValidationStart = sinon.spy(() => executionPath.push("onStart"));
+      const handleValidationFinish = sinon.spy(() => executionPath.push("onFinish"));
 
       const validation = mount(
         <Validation rules={[nonZero, isEven]}
@@ -300,7 +302,7 @@ describe("<Validation />", () => {
 
       const event = createEvent({ target: { value: 2 } });
       return validation.find("textarea").props().onChange(event).then(() => {
-        expect(executionPath).toEqual([
+        expect(executionPath).to.deep.eq([
           "onStart",
           "onValid",
           "onFinish",

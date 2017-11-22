@@ -1,6 +1,13 @@
-import "jest-enzyme";
-import enzyme from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
+import chai from "chai";
+import sinonChai from "sinon-chai";
+import chaiEnzyme from "chai-enzyme";
+import Enzyme from "enzyme";
+import Adapter from 'enzyme-adapter-react-16';
+
+Enzyme.configure({ adapter: new Adapter() });
+
+chai.use(chaiEnzyme())
+chai.use(sinonChai)
 
 Object.defineProperty(HTMLInputElement.prototype.__proto__, "validity", {
   enumerable: false,
@@ -31,5 +38,3 @@ Object.defineProperty(HTMLInputElement.prototype.__proto__, "setCustomValidity",
     this.validationMessage = message;
   },
 });
-
-enzyme.configure({ adapter: new Adapter() });
