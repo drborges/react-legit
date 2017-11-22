@@ -129,7 +129,7 @@ describe("<Validation />", () => {
       );
 
       const event = createEvent({ target: { value: "lol123" } });
-      return form.find("[name='password']").props().onChange(event).then(wait(50)).then(() => {
+      return form.find("[name='password']").props().onChange(event).then(() => {
         expect(handleValidInput).to.have.been.calledWith(passwordConfirmationInput);
       });
     });
@@ -253,16 +253,13 @@ describe("<Validation />", () => {
         </Validation>
       );
 
+      const event = createEvent({ target: { value: 2 } });
       const input = validation.find("input");
 
       expect(input.className).to.be.undefined;
 
-      const event = createEvent({ target: { value: 2 } });
-
-      const changePromise = input.props().onChange(event);
-      validation.update();
-
-      return changePromise.then(() => {
+      return input.props().onChange(event).then(() => {
+        validation.update();
         expect(validation.find("input").props().className).to.eq("dirty");
       });
     });

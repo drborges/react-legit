@@ -148,7 +148,7 @@ export const githubUsernameInput = () => {
     <div>
       <label htmlFor="gh-username">Github Username: </label>
       <Validation rules={[ githubUsernameExists ]} throttle={700} onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
-        <input id="gh-username" type="text" required />
+        <input id="gh-username" type="text" />
       </Validation>
     </div>
   );

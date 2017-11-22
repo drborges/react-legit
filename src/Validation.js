@@ -20,22 +20,26 @@ class Validation extends React.Component {
 
   throttledValidate = throttle(validate, this.props.throttle);
 
+  handleValidationFinish = (input) => {
+    if (!this.state.dirty) {
+      this.setState({ dirty: true });
+    }
+
+    return this.props.onFinish(input);
+  }
+
   bindValidationApi = (input) => {
-    const { rules, onStart, onFinish, onValid, onValidate, onInvalid } = this.props;
+    const { rules, onStart, onValid, onValidate, onInvalid } = this.props;
     const validate = onValidate || this.throttledValidate;
     const self = this;
 
     input.validate = function() {
-      if (!self.state.dirty) {
-        self.setState({ dirty: true });
-      }
-
       return Promise.resolve()
         .then(() => onStart(input))
         .then(() => validate(input, rules))
         .then(() => onValid(input))
         .catch((e) => (e !== PROMISE_THROTTLED) && onInvalid(input))
-        .then(() => onFinish(input));
+        .then(() => self.handleValidationFinish(input));
     };
   }
 
