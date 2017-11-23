@@ -74,13 +74,13 @@ describe("<Validation />", () => {
     });
   });
 
-  describe("#inputRef", () => {
+  describe("#ref", () => {
     it("allows referencing underlying input element", () => {
       let input;
 
       const validation = mount(
-        <Validation inputRef={i => input = i}>
-          <input name="password" />
+        <Validation>
+          <input ref={i => input = i} name="password" />
         </Validation>
       );
 
@@ -93,8 +93,8 @@ describe("<Validation />", () => {
       let input;
 
       const validation = mount(
-        <Validation inputRef={i => input = i} rules={[nonZero, isEven]}>
-          <input name="age" value={1} />
+        <Validation rules={[nonZero, isEven]}>
+          <input ref={i => input = i} name="age" value={1} />
         </Validation>
       );
 
@@ -111,19 +111,12 @@ describe("<Validation />", () => {
 
       const form = mount(
         <form>
-          <Validation
-              inputRef={input => passwordInput = input}
-              onFinish={() => passwordConfirmationInput.validate()}
-          >
-            <input name="password" value="pass123" required />
+          <Validation onFinish={() => passwordConfirmationInput.validate()}>
+            <input ref={input => passwordInput = input} name="password" value="pass123" required />
           </Validation>
 
-          <Validation
-              inputRef={input => passwordConfirmationInput = input}
-              rules={[ validIf(value => value === passwordInput.value) ]}
-              onValid={handleValidInput}
-          >
-            <input name="passwordConfirmation" value="pass123" />
+          <Validation rules={[ validIf(value => value === passwordInput.value) ]} onValid={handleValidInput}>
+            <input ref={input => passwordConfirmationInput = input} name="passwordConfirmation" value="pass123" />
           </Validation>
         </form>
       );

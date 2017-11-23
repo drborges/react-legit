@@ -11,7 +11,6 @@ class Validation extends React.Component {
     onFinish: () => {},
     onValid: () => {},
     onInvalid: () => {},
-    inputRef: () => {},
     refPropName: "ref",
     rules: [],
     throttle: 0,
@@ -44,7 +43,6 @@ class Validation extends React.Component {
   }
 
   componentDidMount() {
-    this.props.inputRef(this.inputRef);
     this.bindValidationApi(this.inputRef);
   }
 
@@ -58,7 +56,6 @@ class Validation extends React.Component {
   render() {
     const {
       children,
-      inputRef,
       onStart,
       onFinish,
       onValid,
@@ -78,7 +75,12 @@ class Validation extends React.Component {
       ...props,
       className: `${dirtyClass} ${input.props.className || ""}`.trim(),
       [trigger]: this.handleValidation(input.props[trigger]),
-      [refPropName]: (target) => this.inputRef = target,
+      [refPropName]: (target) => {
+        this.inputRef = target;
+        if (input.ref) {
+          input.ref(target);
+        }
+      },
     });
   }
 }
