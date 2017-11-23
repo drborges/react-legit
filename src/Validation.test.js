@@ -79,7 +79,7 @@ describe("<Validation />", () => {
       const inputNode = input.instance();
       inputNode.value = 1;
 
-      return input.props().onChange({ target: inputNode }).then(wait(50)).then(() => {
+      return input.props().onChange({ target: inputNode }).catch(() => {
         expect(inputNode.validationMessage).to.eq("Must be an even number");
         expect(handleInvalidInput).to.have.been.calledWith(inputNode);
       });
@@ -110,8 +110,8 @@ describe("<Validation />", () => {
         </Validation>
       );
 
-      return input.validate().catch(error => {
-        expect(error).to.eq("Must be an even number");
+      return input.validate().catch(() => {
+        expect(input.validationMessage).to.eq("Must be an even number");
       });
     });
   });
@@ -284,32 +284,65 @@ describe("<Validation />", () => {
       });
     });
 
-    it("executes lifecycle callbacks in order", () => {
-      const executionPath = [];
-      const handleValidInput = sinon.spy(() => executionPath.push("onValid"));
-      const handleValidationStart = sinon.spy(() => executionPath.push("onStart"));
-      const handleValidationFinish = sinon.spy(() => executionPath.push("onFinish"));
+    context("valid input", () => {
+      it("executes lifecycle callbacks in order", () => {
+        const executionPath = [];
+        const handleValidInput = sinon.spy(() => executionPath.push("onValid"));
+        const handleValidationStart = sinon.spy(() => executionPath.push("onStart"));
+        const handleValidationFinish = sinon.spy(() => executionPath.push("onFinish"));
 
-      const validation = mount(
-        <Validation rules={[nonZero, isEven]}
-            onValid={handleValidInput}
-            onStart={handleValidationStart}
-            onFinish={handleValidationFinish}
-        >
-          <input name="age" />
-        </Validation>
-      );
+        const validation = mount(
+          <Validation rules={[nonZero, isEven]}
+              onValid={handleValidInput}
+              onStart={handleValidationStart}
+              onFinish={handleValidationFinish}
+          >
+            <input name="age" />
+          </Validation>
+        );
 
-      const input = validation.find("input");
-      const inputNode = input.instance();
-      inputNode.value = 2;
+        const input = validation.find("input");
+        const inputNode = input.instance();
+        inputNode.value = 2;
 
-      return input.props().onChange({ target: inputNode }).then(() => {
-        expect(executionPath).to.deep.eq([
-          "onStart",
-          "onValid",
-          "onFinish",
-        ])
+        return input.props().onChange({ target: inputNode }).then(() => {
+          expect(executionPath).to.deep.eq([
+            "onStart",
+            "onValid",
+            "onFinish",
+          ])
+        });
+      });
+    });
+
+    context("invalid input", () => {
+      it("executes lifecycle callbacks in order", () => {
+        const executionPath = [];
+        const handleInvalidInput = sinon.spy(() => executionPath.push("onInvalid"));
+        const handleValidationStart = sinon.spy(() => executionPath.push("onStart"));
+        const handleValidationFinish = sinon.spy(() => executionPath.push("onFinish"));
+
+        const validation = mount(
+          <Validation rules={[nonZero, isEven]}
+              onInvalid={handleInvalidInput}
+              onStart={handleValidationStart}
+              onFinish={handleValidationFinish}
+          >
+            <input name="age" />
+          </Validation>
+        );
+
+        const input = validation.find("input");
+        const inputNode = input.instance();
+        inputNode.value = 1;
+
+        return input.props().onChange({ target: inputNode }).catch(() => {
+          expect(executionPath).to.deep.eq([
+            "onStart",
+            "onInvalid",
+            "onFinish",
+          ])
+        });
       });
     });
   });
