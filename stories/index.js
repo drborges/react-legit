@@ -14,6 +14,7 @@ import {
   html5RequiredTextarea,
   throttleValidationBy,
   formWithControlledState,
+  validateOnSubmit,
 } from "../src/Validation.stories";
 
 import styles from "./styles.scss";
@@ -42,4 +43,5 @@ storiesOf("Validation/Throtteled", module)
   .add("by 1s", () => throttleValidationBy(1000));
 
 storiesOf("Validation/Use Cases", module)
-  .add("Password Confirmation", () => formWithControlledState());
+  .add("Password Confirmation", () => formWithControlledState())
+  .add("Validate on submit", () => validateOnSubmit());

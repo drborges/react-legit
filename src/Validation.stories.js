@@ -2,7 +2,7 @@ import React from "react";
 import { action } from "@storybook/addon-actions";
 import { linkTo } from "@storybook/addon-links";
 
-import Validation from "../lib";
+import Validation from "./Validation";
 
 export const html5RequiredInput = () => (
   <div>
@@ -154,13 +154,13 @@ export const githubUsernameInput = () => {
   );
 };
 
-export const formWithControlledState = () => {
-  const validIf = (predicate) => (value) => new Promise((resolve, reject) => {
-    predicate(value) ?
-      resolve(value) :
-      reject(`Value '${value}' does not match predicate!`);
-  });
+const validIf = (predicate) => (value) => new Promise((resolve, reject) => {
+  predicate(value) ?
+  resolve(value) :
+  reject(`Value '${value}' does not match predicate!`);
+});
 
+export const formWithControlledState = () => {
   class Form extends React.Component {
     state = {
       password: "pass123",
@@ -208,3 +208,74 @@ export const formWithControlledState = () => {
     <Form />
   );
 };
+
+export const validateOnSubmit = () => {
+  class ValidateOnSubmit extends React.Component {
+    state = {
+      hints: {},
+    }
+
+    inputRefs = [];
+
+    handleSubmit = (event) => {
+      event.preventDefault();
+      Promise.all(this.inputRefs.filter(input => input).map(input => input.validate())).then(() => {
+        if (Object.keys(this.state.hints).length === 0) {
+          action("Submitting form...")();
+        }
+      });
+    };
+
+    handleInvalidInput = (input) => {
+      this.state.hints[input.name] = input.validationMessage;
+      this.setState(this.state);
+    }
+
+    handleValidInput = (input) => {
+      delete this.state.hints[input.name];
+      this.setState({
+        hints: this.state.hints,
+      });
+    }
+
+    render() {
+      return (
+        <form onSubmit={this.handleSubmit} noValidate>
+          <div className="row">
+            <label>{'Username'}</label>
+            <Validation rules={[ validIf(value => value.length >= 3) ]}
+                onValid={this.handleValidInput}
+                onInvalid={this.handleInvalidInput}
+            >
+              <input ref={input => this.inputRefs.push(input)} type="text" name="username" />
+            </Validation>
+
+            {this.state.hints.username && (
+              <span className="hint">{'Username must be at least 3 characters long'}</span>
+            )}
+          </div>
+
+          <div className="row">
+            <label>Password</label>
+            <Validation rules={[ validIf(value => value.length >= 5) ]}
+                onValid={this.handleValidInput}
+                onInvalid={this.handleInvalidInput}
+            >
+              <input ref={input => this.inputRefs.push(input)} type="password" name="password" />
+            </Validation>
+
+            {this.state.hints.password && (
+              <span className="hint">{'Password must be at least 5 characters long'}</span>
+            )}
+          </div>
+
+          <div className="row">
+            <button type="submit">{'Save'}</button>
+          </div>
+        </form>
+      )
+    }
+  }
+
+  return (<ValidateOnSubmit />);
+}
