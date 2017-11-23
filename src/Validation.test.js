@@ -5,7 +5,7 @@ import { mount } from "enzyme";
 
 import Validation from "./Validation";
 
-import { createEvent, nonZero, isEven, validIf, wait } from "./test.fixtures";
+import { nonZero, isEven, validIf, wait } from "./test.fixtures";
 
 describe("<Validation />", () => {
   describe("#rules", () => {
@@ -18,9 +18,12 @@ describe("<Validation />", () => {
         </Validation>
       );
 
-      const event = createEvent({ target: { value: 2 } });
-      return validation.find("textarea").props().onChange(event).then(() => {
-        expect(handleValidInput).to.have.been.calledWith(event.target);
+      const textarea = validation.find("textarea");
+      const textareaNode = textarea.instance();
+      textareaNode.value = 2;
+
+      return textarea.props().onChange({ target: textareaNode }).then(() => {
+        expect(handleValidInput).to.have.been.calledWith(textareaNode);
       });
     });
 
@@ -36,9 +39,12 @@ describe("<Validation />", () => {
         </Validation>
       );
 
-      const event = createEvent({ target: { value: 2 } });
-      return validation.find("select").props().onChange(event).then(() => {
-        expect(handleValidInput).to.have.been.calledWith(event.target);
+      const select = validation.find("select");
+      const selectNode = select.instance();
+      selectNode.value = 2;
+
+      return select.props().onChange({ target: selectNode }).then(() => {
+        expect(handleValidInput).to.have.been.calledWith(selectNode);
       });
     });
 
@@ -51,9 +57,12 @@ describe("<Validation />", () => {
         </Validation>
       );
 
-      const event = createEvent({ target: { value: 2 } });
-      return validation.find("input").props().onChange(event).then(() => {
-        expect(handleValidInput).to.have.been.calledWith(event.target);
+      const input = validation.find("input");
+      const inputNode = input.instance();
+      inputNode.value = 2;
+
+      return input.props().onChange({ target: inputNode }).then(() => {
+        expect(handleValidInput).to.have.been.calledWith(inputNode);
       });
     });
 
@@ -66,10 +75,13 @@ describe("<Validation />", () => {
         </Validation>
       );
 
-      const event = createEvent({ target: { value: 1 } });
-      return validation.find("input").props().onChange(event).then(wait(50)).then(() => {
-        expect(event.target.validationMessage).to.eq("Must be an even number");
-        expect(handleInvalidInput).to.have.been.calledWith(event.target);
+      const input = validation.find("input");
+      const inputNode = input.instance();
+      inputNode.value = 1;
+
+      return input.props().onChange({ target: inputNode }).then(wait(50)).then(() => {
+        expect(inputNode.validationMessage).to.eq("Must be an even number");
+        expect(handleInvalidInput).to.have.been.calledWith(inputNode);
       });
     });
   });
@@ -121,8 +133,10 @@ describe("<Validation />", () => {
         </form>
       );
 
-      const event = createEvent({ target: { value: "lol123" } });
-      return form.find("[name='password']").props().onChange(event).then(() => {
+      const input = form.find("[name='password']");
+      const inputNode = input.instance();
+
+      return input.props().onChange({ target: inputNode }).then(() => {
         expect(handleValidInput).to.have.been.calledWith(passwordConfirmationInput);
       });
     });
@@ -137,9 +151,12 @@ describe("<Validation />", () => {
         </Validation>
       );
 
-      const event = createEvent({ target: { value: 2 }});
-      return validation.find("input").props().onBlur(event).then(() => {
-        expect(handleValidInput).to.have.been.calledWith(event.target);
+      const input = validation.find("input");
+      const inputNode = input.instance();
+      inputNode.value = 2;
+
+      return input.props().onBlur({ target: inputNode }).then(() => {
+        expect(handleValidInput).to.have.been.calledWith(inputNode);
       });
     });
 
@@ -151,8 +168,11 @@ describe("<Validation />", () => {
         </Validation>
       );
 
-      const event = createEvent({ target: { value: 2 }});
-      return validation.find("input").props().onChange(event).then(() => {
+      const input = validation.find("input");
+      const inputNode = input.instance();
+      const event = { target: inputNode };
+
+      return input.props().onChange(event).then(() => {
         expect(handleChange).to.have.been.calledWith(event);
       });
     });
@@ -174,17 +194,20 @@ describe("<Validation />", () => {
       );
 
       const input = validation.find("input");
-      const event1 = createEvent({ target: { value: 1 }});
-      const event2 = createEvent({ target: { value: 2 }});
-      const event1ChangePromises = input.props().onChange(event1);
-      const event2ChangePromises = input.props().onChange(event2);
+      const inputNode = input.instance();
 
-      return event1ChangePromises.then(wait(50)).then(() => {
-        expect(handleInvalidInput).to.have.not.been.calledWith(event1.target);
+      inputNode.value = 1;
+      const event1ChangePromises = input.props().onChange({ target: inputNode });
+
+      inputNode.value = 2;
+      const event2ChangePromises = input.props().onChange({ target: inputNode });
+
+      return event1ChangePromises.then(() => {
+        expect(handleInvalidInput).to.have.not.been.calledWith(inputNode);
         expect(handleValidInput).to.have.not.been.called;
 
         return event2ChangePromises.then(() => {
-          expect(handleValidInput).to.have.been.calledWith(event2.target);
+          expect(handleValidInput).to.have.been.calledWith(inputNode);
         });
       });
     });
@@ -203,9 +226,12 @@ describe("<Validation />", () => {
         </Validation>
       );
 
-      const event = createEvent({ target: { value: 1 }});
-      validation.find("input").props().onChange(event).then(() => {
-        expect(handleValidInput).to.have.been.calledWith(event.target);
+      const input = validation.find("input");
+      const inputNode = input.instance();
+      inputNode.value = 1;
+
+      return input.props().onChange({ target: inputNode }).then(() => {
+        expect(handleValidInput).to.have.been.calledWith(inputNode);
       });
     });
   });
@@ -231,9 +257,12 @@ describe("<Validation />", () => {
         </Validation>
       );
 
-      const event = createEvent({ target: { value: 2 }});
-      validation.find("input").props().onChange(event).then(() => {
-        expect(handleValidInput).to.have.been.calledWith(event.target);
+      const input = validation.find("input");
+      const inputNode = input.instance();
+      inputNode.value = 2;
+
+      input.props().onChange({ target: inputNode }).then(() => {
+        expect(handleValidInput).to.have.been.calledWith(inputNode);
       });
     });
   });
@@ -246,14 +275,12 @@ describe("<Validation />", () => {
         </Validation>
       );
 
-      const event = createEvent({ target: { value: 2 } });
       const input = validation.find("input");
+      const inputNode = input.instance();
 
-      expect(input.className).to.be.undefined;
-
-      return input.props().onChange(event).then(() => {
-        validation.update();
-        expect(validation.find("input").props().className).to.eq("dirty");
+      expect(inputNode.className).to.be.empty;
+      return input.props().onChange({ target: inputNode }).then(() => {
+        expect(inputNode.className).to.eq("dirty");
       });
     });
 
@@ -269,12 +296,15 @@ describe("<Validation />", () => {
             onStart={handleValidationStart}
             onFinish={handleValidationFinish}
         >
-          <textarea name="password" />
+          <input name="age" />
         </Validation>
       );
 
-      const event = createEvent({ target: { value: 2 } });
-      return validation.find("textarea").props().onChange(event).then(() => {
+      const input = validation.find("input");
+      const inputNode = input.instance();
+      inputNode.value = 2;
+
+      return input.props().onChange({ target: inputNode }).then(() => {
         expect(executionPath).to.deep.eq([
           "onStart",
           "onValid",
