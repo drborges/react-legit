@@ -21,7 +21,7 @@
     "release-patch": "npm version patch -m",
     "release-minor": "npm version minor -m",
     "release-major": "npm version major -m",
-    "publish": "npm publish ./",
+    "publish": "npm login && npm publish ./",
     "analyze": "webpack --profile --json > lib/stats.json && webpack-bundle-analyzer -m server lib/stats.json lib/index.js -s gzip"
   },
   "dependencies": {
