@@ -1,4 +1,9 @@
 const path = require("path");
+const webpack = require("webpack");
+const CompressionPlugin = require("compression-webpack-plugin");
+
+const env = process.env.NODE_ENV;
+const prodBuild = env === 'production';
 
 module.exports = {
   devtool: "eval-source-map",
@@ -14,6 +19,19 @@ module.exports = {
   resolve: {
     extensions: [".js", ".jsx", ".scss", ".css"],
   },
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin(),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': `"${env}"`,
+    }),
+    new CompressionPlugin({
+      asset: "[path].gz[query]",
+      algorithm: "gzip",
+      test: /\.js$/,
+      threshold: 10240,
+      minRatio: 0,
+    }),
+  ],
   module: {
     rules: [
       {
