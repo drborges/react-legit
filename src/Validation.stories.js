@@ -182,18 +182,12 @@ export const formWithControlledState = () => {
     render() {
       return (
         <form>
-          <Validation
-              inputRef={input => this.inputRefs.passwordInput = input}
-              onFinish={() => this.inputRefs.passwordConfirmation.validate()}
-            >
-            <input name="password" value={this.state.password} onChange={this.handleChange} required />
+          <Validation onFinish={() => this.inputRefs.passwordConfirmation.validate()}>
+            <input ref={input => this.inputRefs.passwordInput = input} name="password" value={this.state.password} onChange={this.handleChange} required />
           </Validation>
 
-          <Validation
-              inputRef={input => this.inputRefs.passwordConfirmation = input}
-              rules={[ validIf(value => value === this.state.password) ]}
-          >
-            <input name="passwordConfirmation" value={this.state.passwordConfirmation} onChange={this.handleChange} />
+          <Validation rules={[ validIf(value => value === this.state.password) ]}>
+            <input ref={input => this.inputRefs.passwordConfirmation = input} name="passwordConfirmation" value={this.state.passwordConfirmation} onChange={this.handleChange} />
           </Validation>
 
           <div className="row">
