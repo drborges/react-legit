@@ -15,6 +15,7 @@ import {
   throttleValidationBy,
   formWithControlledState,
   validateOnSubmit,
+  ImperativeValidation,
 } from "../src/Validation.stories";
 
 import styles from "./styles.scss";
@@ -44,4 +45,5 @@ storiesOf("Validation/Throtteled", module)
 
 storiesOf("Validation/Use Cases", module)
   .add("Password Confirmation", () => formWithControlledState())
-  .add("Validate on submit", () => validateOnSubmit());
+  .add("Validate on submit", () => validateOnSubmit())
+  .add("ImperativeValidation", () => ImperativeValidation());

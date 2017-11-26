@@ -2,7 +2,7 @@ import React from "react";
 import { action } from "@storybook/addon-actions";
 import { linkTo } from "@storybook/addon-links";
 
-import Validation from "../lib";
+import Validation, { validate } from "../lib";
 
 export const html5RequiredInput = () => (
   <div>
@@ -213,7 +213,6 @@ export const validateOnSubmit = () => {
       [input.name]: input.validationMessage,
     });
 
-
     render() {
       const input = React.Children.only(this.props.children);
 
@@ -281,4 +280,61 @@ export const validateOnSubmit = () => {
   }
 
   return (<ValidateOnSubmit />);
+}
+
+export const ImperativeValidation = () => {
+  class ImperativeValidationForm extends React.Component {
+    state = {};
+    inputs = [];
+
+    validation = {
+      username: [ validIf(value => value === "drborges") ],
+      password: [ validIf(value => value.length > 4) ],
+    };
+
+    triggerValidation = (input, rules) => validate(input, rules)
+      .then((value) => action(`${value} is a valid entry`)())
+      .catch((hint) => action(`Form data is invalid: ${hint}`)());
+
+    handleChange = (event) => {
+      this.triggerValidation(event.target, this.validation[event.target.name]);
+      this.setState({
+        [event.target.name]: event.target.value,
+      });
+    };
+
+    handleSubmit = (event) => {
+      event.preventDefault();
+      const validations = this.inputs
+        .map(input => this.triggerValidation(input, this.validation[input.name]));
+
+      Promise.all(validations)
+        .then(() => action("Form is valid!")())
+        .catch(() => action("Form is invalid!")());
+    };
+
+    render() {
+      return (
+        <form onSubmit={this.handleSubmit}>
+          <input
+              ref={input => this.inputs.push(input)}
+              className={this.state.username && "dirty"}
+              name="username"
+              onChange={this.handleChange}
+          />
+
+          <input
+              ref={input => this.inputs.push(input)}
+              className={this.state.password && "dirty"}
+              name="password"
+              onChange={this.handleChange}
+          />
+
+          <button>Save</button>
+        </form>
+      );
+    }
+  }
+
+  return <ImperativeValidationForm />;
 }

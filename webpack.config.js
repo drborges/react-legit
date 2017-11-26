@@ -8,7 +8,7 @@ const prodBuild = env === 'production';
 module.exports = {
   devtool: "eval-source-map",
   entry: [
-    "./src/Validation",
+    "./src/index",
   ],
   output: {
     path: path.resolve(__dirname, "lib"),
