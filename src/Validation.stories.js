@@ -37,7 +37,11 @@ class ValidationWithHint extends React.Component {
 
     return (
       <div className="input-with-hint">
-        <Validation rules={this.props.rules} throttle={this.props.throttle} onValid={this.handleValidInput} onInvalid={this.handleInvalidInput}>
+        <Validation
+            {...this.props}
+            onValid={this.handleValidInput}
+            onInvalid={this.handleInvalidInput}
+        >
           {input}
         </Validation>
 
@@ -50,48 +54,52 @@ class ValidationWithHint extends React.Component {
 }
 
 export const html5RequiredInput = () => (
-  <div>
-    <label>{'* Username: '}</label>
-    <Validation onValid={handleValidInput} onInvalid={handleInvalidInput}>
-      <input type="text" required />
-    </Validation>
-  </div>
+  <form className="row">
+    <label>{'Username: '}</label>
+    <ValidationWithHint onValid={handleValidInput} onInvalid={handleInvalidInput}>
+      <input type="text" name="username" required autoComplete="off" />
+    </ValidationWithHint>
+  </form>
 );
 
 export const html5EmailInput = () => (
-  <div>
-    <label htmlFor="email">Email: </label>
-    <Validation onValid={handleValidInput} onInvalid={handleInvalidInput}>
-      <input id="email" type="email" />
-    </Validation>
-  </div>
+  <form className="row">
+    <label>{'Email: '}</label>
+    <ValidationWithHint onValid={handleValidInput} onInvalid={handleInvalidInput}>
+      <input id="email" name="email" type="email" autoComplete="off" />
+    </ValidationWithHint>
+  </form>
 );
 
 export const html5URLInput = () => (
-  <div>
-    <label htmlFor="website">Website: </label>
-    <Validation onValid={handleValidInput} onInvalid={handleInvalidInput}>
-      <input id="website" type="url" />
-    </Validation>
-  </div>
+  <form className="row">
+    <label>{'Website: '}</label>
+    <ValidationWithHint onValid={handleValidInput} onInvalid={handleInvalidInput}>
+      <input id="website" name="website" type="url" autoComplete="off" />
+    </ValidationWithHint>
+  </form>
 );
 
 export const html5NumberInput = () => (
-  <div>
-    <label htmlFor="age">Age (between 18 and 40): </label>
-    <Validation onValid={handleValidInput} onInvalid={handleInvalidInput}>
-      <input id="age" type="number" min="18" max="40" step="1" />
-    </Validation>
-  </div>
+  <form className="row">
+    <label>{'Age: '}</label>
+    <ValidationWithHint
+        hint="Age must be between '18' and '40'"
+        onValid={handleValidInput}
+        onInvalid={handleInvalidInput}
+    >
+      <input name="age" type="number" min="18" max="40" step="1" autoComplete="off" />
+    </ValidationWithHint>
+  </form>
 );
 
 export const html5InputPattern = () => (
-  <div>
-    <label htmlFor="phone">Cell: </label>
-    <Validation onValid={handleValidInput} onInvalid={handleInvalidInput}>
-      <input id="phone" type="text" pattern="\(\d\d\d\) \d\d\d-\d\d\d\d" placeholder="(ddd) ddd-dddd" />
-    </Validation>
-  </div>
+  <form className="row">
+    <label>{'Cell: '}</label>
+    <ValidationWithHint onValid={handleValidInput} onInvalid={handleInvalidInput}>
+      <input name="phone" type="text" pattern="\(\d\d\d\) \d\d\d-\d\d\d\d" placeholder="(ddd) ddd-dddd" autoComplete="off" />
+    </ValidationWithHint>
+  </form>
 );
 
 export const throttleValidationBy = (delay) => (
@@ -104,16 +112,16 @@ export const throttleValidationBy = (delay) => (
 );
 
 export const CustomRulesForm = () => {
-  const nonZeroNumber = validIf(value => value != 0);
-  const evenNumber = validIf(value => value % 2 == 0);
+  const nonZeroNumber = validIf(value => value != 0, (value) => "Cannot be zero");
+  const evenNumber = validIf(value => value % 2 == 0, (value) => `'${value}' is not an event number`);
 
   return (
-    <div>
-      <label htmlFor="nonzero-even">Non-zero and even: </label>
-      <Validation rules={[ nonZeroNumber, evenNumber ]} onValid={handleValidInput} onInvalid={handleInvalidInput}>
-        <input id="nonzero-even" type="number" />
-      </Validation>
-    </div>
+    <form className="row">
+      <label>{'Number: '}</label>
+      <ValidationWithHint rules={[ nonZeroNumber, evenNumber ]} onValid={handleValidInput} onInvalid={handleInvalidInput}>
+        <input name="nonzero-even" type="number" autoComplete="off" />
+      </ValidationWithHint>
+    </form>
   );
 };
 
@@ -166,26 +174,26 @@ export const PasswordConfirmationForm = () => {
         <form>
           <div className="row">
             <label>{'Password: '}</label>
-            <Validation onFinish={() => this.inputRefs.passwordConfirmation.validate()}>
+            <ValidationWithHint onFinish={() => this.inputRefs.passwordConfirmation.validate()}>
               <input type="password"
                   ref={input => this.inputRefs.passwordInput = input}
                   name="password" value={this.state.password}
                   onChange={this.handleChange}
                   required
               />
-            </Validation>
+            </ValidationWithHint>
           </div>
 
           <div className="row">
-            <label>{'Confirm Password: '}</label>
-            <Validation rules={[ validIf(value => value === this.state.password) ]}>
+            <label>{'Confirm: '}</label>
+            <ValidationWithHint rules={[ validIf(value => value === this.state.password) ]} hint="Confirmation does not match the provided password">
               <input type="password"
                   ref={input => this.inputRefs.passwordConfirmation = input}
                   name="passwordConfirmation"
                   value={this.state.passwordConfirmation}
                   onChange={this.handleChange}
               />
-            </Validation>
+            </ValidationWithHint>
           </div>
 
           <div className="row">
@@ -222,16 +230,16 @@ export const OnSubmitValidationForm = () => {
         <form onSubmit={this.handleSubmit} noValidate>
           <div className="row">
             <label>{'Username:'}</label>
-            <Validation rules={[ validIf(value => value.length >= 3) ]}>
-              <input ref={input => this.inputRefs.push(input)} type="text" name="username" />
-            </Validation>
+            <ValidationWithHint rules={[ validIf(value => value.length >= 3) ]} hint="Username must be at least 3 characters long">
+              <input ref={input => this.inputRefs.push(input)} type="text" name="username" autoComplete="off" />
+            </ValidationWithHint>
           </div>
 
           <div className="row">
             <label>{'Password:'}</label>
-            <Validation rules={[ validIf(value => value.length >= 5) ]}>
-              <input ref={input => this.inputRefs.push(input)} type="password" name="password" />
-            </Validation>
+            <ValidationWithHint rules={[ validIf(value => value.length >= 5) ]} hint="Password must be at least 5 characters long">
+              <input ref={input => this.inputRefs.push(input)} type="password" name="password" autoComplete="off" />
+            </ValidationWithHint>
           </div>
 
           <div className="row">

@@ -6,6 +6,10 @@
   & > * {
     flex-grow: 1;
   }
+
+  label {
+    flex-basis: 20%;
+  }
 }
 
 .hint {
