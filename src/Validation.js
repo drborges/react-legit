@@ -3,19 +3,25 @@ import React from "react";
 import throttle, { PROMISE_THROTTLED } from "./throttle";
 import validate from "./validate";
 
+const noop = () => {};
+const fncompose = (fn1 = noop, fn2 = noop) => (event) => {
+  fn1(event);
+  return fn2(event);
+};
+
 class Validation extends React.Component {
   state = {};
 
   static defaultProps = {
-    onStart: () => {},
-    onFinish: () => {},
-    onValid: () => {},
-    onInvalid: () => {},
+    onStart: noop,
+    onFinish: noop,
+    onValid: noop,
+    onInvalid: noop,
     refPropName: "ref",
     rules: [],
     throttle: 0,
     trigger: "onChange",
-  }
+  };
 
   throttledValidate = throttle(validate, this.props.throttle);
 
@@ -25,7 +31,7 @@ class Validation extends React.Component {
     }
 
     return this.props.onFinish(input);
-  }
+  };
 
   bindValidationApi = (input) => {
     const { rules, onStart, onValid, onValidate, onInvalid } = this.props;
@@ -40,17 +46,14 @@ class Validation extends React.Component {
         .catch(e => (e !== PROMISE_THROTTLED) && onInvalid(input))
         .then(() => self.handleValidationFinish(input));
     };
-  }
+  };
+
+  handleValidation = (event) => {
+    return event.target.validate();
+  };
 
   componentDidMount() {
     this.bindValidationApi(this.inputRef);
-  }
-
-  handleValidation = (childEventHandler = () => {}) => (event) => {
-    // prevents existing event handlers from being overriden
-    childEventHandler(event);
-    !event.target.validate && this.bindValidationApi(event.target);
-    return event.target.validate();
   }
 
   render() {
@@ -74,12 +77,10 @@ class Validation extends React.Component {
     return React.cloneElement(input, {
       ...props,
       className: `${dirtyClass} ${input.props.className || ""}`.trim(),
-      [trigger]: this.handleValidation(input.props[trigger]),
+      [trigger]: fncompose(input.props[trigger], this.handleValidation),
       [refPropName]: (target) => {
         this.inputRef = target;
-        if (input.ref) {
-          input.ref(target);
-        }
+        input.ref && input.ref(target);
       },
     });
   }
