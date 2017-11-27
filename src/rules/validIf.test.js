@@ -15,13 +15,14 @@ describe("validIf", () => {
   describe("when value is invalid", () => {
     it("resolves promise", () => {
       return validate(1).catch(hint => {
-        expect(hint).to.eq("does not match predicate");
+        expect(hint).to.eq("'1' does not match predicate");
       });
     });
 
     it("customizes hint message", () => {
-      return validIf(value => value === 2, "1 does not match 2")(1).catch(hint => {
-        expect(hint).to.eq("1 does not match 2");
+      const hint = (value) => `'${value}' does not match '2'`;
+      return validIf(value => value === 2, hint)(1).catch(hint => {
+        expect(hint).to.eq("'1' does not match '2'");
       });
     });
   });

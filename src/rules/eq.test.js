@@ -15,13 +15,14 @@ describe("eq", () => {
   describe("when value is invalid", () => {
     it("resolves promise", () => {
       return validate(1).catch(hint => {
-        expect(hint).to.eq("not equal to 2");
+        expect(hint).to.eq("'1' is not equal to '2'");
       });
     });
 
     it("customizes hint message", () => {
-      return eq(2, "1 is not 2")(1).catch(hint => {
-        expect(hint).to.eq("1 is not 2");
+      const hint = (value) => `'${value}' is not '2'`;
+      return eq(2, hint)(1).catch(hint => {
+        expect(hint).to.eq("'1' is not '2'");
       });
     });
   });

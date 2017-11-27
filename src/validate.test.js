@@ -15,7 +15,7 @@ describe("validate", () => {
     const input = createFakeInput({ value: 1 });
 
     return validate(input, [nonZero, isEven]).catch(hint => {
-      expect(hint).to.eq("Must be an even number");
+      expect(hint).to.eq("'1' must be an even number");
     });
   });
 });

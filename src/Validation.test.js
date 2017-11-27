@@ -4,8 +4,9 @@ import { expect } from "chai";
 import { mount } from "enzyme";
 
 import Validation from "./Validation";
+import validIf from "./rules/validIf";
 
-import { nonZero, isEven, validIf, wait } from "./test.fixtures";
+import { nonZero, isEven, wait } from "./test.fixtures";
 
 describe("<Validation />", () => {
   describe("#rules", () => {
@@ -80,7 +81,7 @@ describe("<Validation />", () => {
       inputNode.value = 1;
 
       return input.props().onChange({ target: inputNode }).then(() => {
-        expect(inputNode.validationMessage).to.eq("Must be an even number");
+        expect(inputNode.validationMessage).to.eq("'1' must be an even number");
         expect(handleInvalidInput).to.have.been.calledWith(inputNode);
       });
     });
@@ -111,7 +112,7 @@ describe("<Validation />", () => {
       );
 
       return input.validate().then(() => {
-        expect(input.validationMessage).to.eq("Must be an even number");
+        expect(input.validationMessage).to.eq("'1' must be an even number");
       });
     });
   });

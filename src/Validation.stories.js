@@ -4,15 +4,11 @@ import { linkTo } from "@storybook/addon-links";
 
 import Validation, {
   validate,
+  validIf,
 } from "../lib";
 
 const handleValidInput = (input) => action("Valid:", input.value)();
 const handleInvalidInput = (input) => action(input.validationMessage)();
-const validIf = (predicate, hint) => (value) => new Promise((resolve, reject) => {
-  predicate(value) ?
-  resolve(value) :
-  reject(hint || `'${value}' is not a valid value`);
-});
 
 class ValidationWithHint extends React.Component {
   state = {};
@@ -291,8 +287,8 @@ export const ImperativeValidationForm = () => {
     inputs = {};
 
     validation = {
-      username: [ validIf(value => value === "drborges", "Username must be 'drborges'") ],
-      password: [ validIf(value => value.length > 4, "Password must be at least 5 characters long") ],
+      username: [ validIf(value => value === "drborges", () => "Username must be 'drborges'") ],
+      password: [ validIf(value => value.length > 4, () => "Password must be at least 5 characters long") ],
     };
 
     triggerValidation = (input, rules) => validate(input, rules)
