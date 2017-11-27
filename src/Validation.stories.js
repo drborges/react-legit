@@ -2,69 +2,62 @@ import React from "react";
 import { action } from "@storybook/addon-actions";
 import { linkTo } from "@storybook/addon-links";
 
-import Validation, { validate } from "../lib";
+import Validation, {
+  validate,
+} from "../lib";
+
+const handleValidInput = (input) => action("Valid:", input.value)();
+const handleInvalidInput = (input) => action(input.validationMessage)();
+const validIf = (predicate, hint) => (value) => new Promise((resolve, reject) => {
+  predicate(value) ?
+  resolve(value) :
+  reject(hint || `'${value}' is not a valid value`);
+});
+
+class ValidationWithHint extends React.Component {
+  state = {};
+
+  static defaultProps = {
+    onValid: () => {},
+    onInvalid: () => {},
+  }
+
+  handleValidInput = (input) => {
+    this.setState({ invalid: false });
+    this.props.onValid(input);
+  };
+
+  handleInvalidInput = (input) => {
+    this.setState({
+      invalid: true,
+      [input.name]: input.validity.customError ? this.props.hint || input.validationMessage : input.validationMessage,
+    });
+
+    this.props.onInvalid(input);
+  }
+
+  render() {
+    const input = React.Children.only(this.props.children);
+
+    return (
+      <div className="input-with-hint">
+        <Validation rules={this.props.rules} throttle={this.props.throttle} onValid={this.handleValidInput} onInvalid={this.handleInvalidInput}>
+          {input}
+        </Validation>
+
+        {this.state.invalid && (
+          <div className="hint">{this.state[input.props.name]}</div>
+        )}
+      </div>
+    )
+  }
+}
 
 export const html5RequiredInput = () => (
   <div>
-    <label htmlFor="username">* Username: </label>
-    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
-      <input id="username" type="text" required />
-    </Validation>
-  </div>
-);
-
-export const html5RequiredInputCheckbox = () => (
-  <div>
-    <label htmlFor="username">* Username: </label>
-
-    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
-      <input type="checkbox" name="username" value="1" required />drborges
-    </Validation>
-
-    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
-      <input type="checkbox" name="username" value="2" required />diego
-    </Validation>
-
-    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
-      <input type="checkbox" name="username" value="3" required />borges
-    </Validation>
-  </div>
-);
-
-export const html5RequiredInputRadio = () => (
-  <div>
-    <label htmlFor="username">* Username: </label>
-    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
-      <input type="radio" name="username" value="1" required />drborges
-    </Validation>
-    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
-      <input type="radio" name="username" value="2" required />diego
-    </Validation>
-    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
-      <input type="radio" name="username" value="3" required />borges
-    </Validation>
-  </div>
-);
-
-export const html5RequiredSelect = () => (
-  <div>
-    <label htmlFor="username">* Username: </label>
-    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
-      <select required>
-        <option />
-        <option value="1">drborges</option>
-        <option value="2">diego</option>
-        <option value="3">borges</option>
-      </select>
-    </Validation>
-  </div>
-);
-
-export const html5RequiredTextarea = () => (
-  <div>
-    <label htmlFor="username">* Username: </label>
-    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
-      <textarea required />
+    <label>{'* Username: '}</label>
+    <Validation onValid={handleValidInput} onInvalid={handleInvalidInput}>
+      <input type="text" required />
     </Validation>
   </div>
 );
@@ -72,7 +65,7 @@ export const html5RequiredTextarea = () => (
 export const html5EmailInput = () => (
   <div>
     <label htmlFor="email">Email: </label>
-    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+    <Validation onValid={handleValidInput} onInvalid={handleInvalidInput}>
       <input id="email" type="email" />
     </Validation>
   </div>
@@ -81,7 +74,7 @@ export const html5EmailInput = () => (
 export const html5URLInput = () => (
   <div>
     <label htmlFor="website">Website: </label>
-    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+    <Validation onValid={handleValidInput} onInvalid={handleInvalidInput}>
       <input id="website" type="url" />
     </Validation>
   </div>
@@ -90,7 +83,7 @@ export const html5URLInput = () => (
 export const html5NumberInput = () => (
   <div>
     <label htmlFor="age">Age (between 18 and 40): </label>
-    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+    <Validation onValid={handleValidInput} onInvalid={handleInvalidInput}>
       <input id="age" type="number" min="18" max="40" step="1" />
     </Validation>
   </div>
@@ -99,99 +92,108 @@ export const html5NumberInput = () => (
 export const html5InputPattern = () => (
   <div>
     <label htmlFor="phone">Cell: </label>
-    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+    <Validation onValid={handleValidInput} onInvalid={handleInvalidInput}>
       <input id="phone" type="text" pattern="\(\d\d\d\) \d\d\d-\d\d\d\d" placeholder="(ddd) ddd-dddd" />
     </Validation>
   </div>
 );
 
 export const throttleValidationBy = (delay) => (
-  <div>
-    <label htmlFor="username">* Username: </label>
-    <Validation onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()} throttle={delay}>
-      <input id="username" type="text" minLength={3} maxLength={10} />
-    </Validation>
-  </div>
+  <form className="row">
+    <label>{'Username: '}</label>
+    <ValidationWithHint throttle={delay} onValid={handleValidInput} onInvalid={handleInvalidInput}>
+      <input name="username" type="text" minLength={5} maxLength={10} required autoComplete="off" />
+    </ValidationWithHint>
+  </form>
 );
 
-export const nonZeroAndEvenInput = () => {
-  const nonZeroNumber = (value) => new Promise((resolve, reject) =>
-    (value != 0) ?
-      resolve(value) :
-      reject("Cannot be zero!")
-  );
-
-  const evenNumber = (value) => new Promise((resolve, reject) =>
-    (value % 2 == 0) ?
-      resolve(value) :
-      reject("Must be an even number!")
-  );
+export const CustomRulesForm = () => {
+  const nonZeroNumber = validIf(value => value != 0);
+  const evenNumber = validIf(value => value % 2 == 0);
 
   return (
     <div>
       <label htmlFor="nonzero-even">Non-zero and even: </label>
-      <Validation rules={[ nonZeroNumber, evenNumber ]} onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
+      <Validation rules={[ nonZeroNumber, evenNumber ]} onValid={handleValidInput} onInvalid={handleInvalidInput}>
         <input id="nonzero-even" type="number" />
       </Validation>
     </div>
   );
 };
 
-export const githubUsernameInput = () => {
-  const githubUsernameExists = (value) => new Promise((resolve, reject) => {
+export const GithubUsernameValidationForm = () => {
+  const availableGithubUsername = (value) => new Promise((resolve, reject) => {
     fetch(`https://api.github.com/users/${value}`).then(response => {
-      response.ok ? resolve(value) : reject(`Username '${value}' does not exist!`);
+      if (response.ok) {
+        reject(`Username '${value}' has already been taken`);
+      } else {
+        resolve(value);
+      }
     });
   });
 
   return (
-    <div>
-      <label htmlFor="gh-username">Github Username: </label>
-      <Validation rules={[ githubUsernameExists ]} throttle={700} onValid={(input) => action("Valid:", input.value)} onInvalid={(input) => action(input.validationMessage)()}>
-        <input id="gh-username" type="text" />
-      </Validation>
-    </div>
+    <form className="row">
+      <label>{'Username: '}</label>
+      <ValidationWithHint
+          rules={[ availableGithubUsername ]}
+          throttle={700}
+          onValid={handleValidInput}
+          onInvalid={handleInvalidInput}
+      >
+        <input type="text" name="gh-username" required autoComplete="off" placeholder="Type your Github username" />
+      </ValidationWithHint>
+    </form>
   );
 };
 
-const validIf = (predicate) => (value) => new Promise((resolve, reject) => {
-  predicate(value) ?
-  resolve(value) :
-  reject(`Value '${value}' does not match predicate!`);
-});
-
-export const formWithControlledState = () => {
+export const PasswordConfirmationForm = () => {
   class Form extends React.Component {
     state = {
-      password: "pass123",
-      passwordConfirmation: "pass123",
-    }
+      password: "",
+      passwordConfirmation: "",
+    };
 
     inputRefs = {
       passwordInput: null,
       passwordConfirmation: null,
-    }
+    };
 
     handleChange = (event) => {
       this.setState({
-        [event.target.name]: event.target.type === "checkbox" ?
-          event.target.checked : event.target.value,
-      })
-    }
+        [event.target.name]: event.target.value,
+      });
+    };
 
     render() {
       return (
         <form>
-          <Validation onFinish={() => this.inputRefs.passwordConfirmation.validate()}>
-            <input ref={input => this.inputRefs.passwordInput = input} name="password" value={this.state.password} onChange={this.handleChange} required />
-          </Validation>
-
-          <Validation rules={[ validIf(value => value === this.state.password) ]}>
-            <input ref={input => this.inputRefs.passwordConfirmation = input} name="passwordConfirmation" value={this.state.passwordConfirmation} onChange={this.handleChange} />
-          </Validation>
+          <div className="row">
+            <label>{'Password: '}</label>
+            <Validation onFinish={() => this.inputRefs.passwordConfirmation.validate()}>
+              <input type="password"
+                  ref={input => this.inputRefs.passwordInput = input}
+                  name="password" value={this.state.password}
+                  onChange={this.handleChange}
+                  required
+              />
+            </Validation>
+          </div>
 
           <div className="row">
-            <button type="submit">Submit</button>
+            <label>{'Confirm Password: '}</label>
+            <Validation rules={[ validIf(value => value === this.state.password) ]}>
+              <input type="password"
+                  ref={input => this.inputRefs.passwordConfirmation = input}
+                  name="passwordConfirmation"
+                  value={this.state.passwordConfirmation}
+                  onChange={this.handleChange}
+              />
+            </Validation>
+          </div>
+
+          <div className="row">
+            <button type="button">{'Submit'}</button>
           </div>
         </form>
       )
@@ -203,37 +205,8 @@ export const formWithControlledState = () => {
   );
 };
 
-export const validateOnSubmit = () => {
-  class ValidationWithHint extends React.Component {
-    state = {};
-
-    handleValidInput = (input) => this.setState({ invalid: false });
-    handleInvalidInput = (input) => this.setState({
-      invalid: true,
-      [input.name]: input.validationMessage,
-    });
-
-    render() {
-      const input = React.Children.only(this.props.children);
-
-      return (
-        <span>
-          <Validation rules={this.props.rules}
-              onValid={this.handleValidInput}
-              onInvalid={this.handleInvalidInput}
-          >
-            {input}
-          </Validation>
-
-          {this.state.invalid && (
-            <span className="hint">{this.props.hint || this.state[input.props.name]}</span>
-          )}
-        </span>
-      )
-    }
-  }
-
-  class ValidateOnSubmit extends React.Component {
+export const OnSubmitValidationForm = () => {
+  class Form extends React.Component {
     inputRefs = [];
 
     handleSubmit = (event) => {
@@ -244,7 +217,7 @@ export const validateOnSubmit = () => {
         .map(input => input.validate());
 
       Promise.all(validationPromises)
-        .then(() => action("Submitting form...")())
+        .then(action("Submitting form..."))
         .catch((input) => action(`Form data is invalid: ${input.name}: ${input.value}`)())
     };
 
@@ -252,44 +225,74 @@ export const validateOnSubmit = () => {
       return (
         <form onSubmit={this.handleSubmit} noValidate>
           <div className="row">
-            <label>{'Username'}</label>
-            <ValidationWithHint
-                hint="Username must be at least 3 characters long"
-                rules={[ validIf(value => value.length >= 3) ]}
-            >
+            <label>{'Username:'}</label>
+            <Validation rules={[ validIf(value => value.length >= 3) ]}>
               <input ref={input => this.inputRefs.push(input)} type="text" name="username" />
-            </ValidationWithHint>
+            </Validation>
           </div>
 
           <div className="row">
-            <label>Password</label>
-            <ValidationWithHint
-                hint="Password must be at least 5 characters long"
-                rules={[ validIf(value => value.length >= 5) ]}
-            >
+            <label>{'Password:'}</label>
+            <Validation rules={[ validIf(value => value.length >= 5) ]}>
               <input ref={input => this.inputRefs.push(input)} type="password" name="password" />
-            </ValidationWithHint>
+            </Validation>
           </div>
 
           <div className="row">
-            <button type="submit">{'Save'}</button>
+            <button type="submit">{'Submit'}</button>
           </div>
         </form>
       )
     }
   }
 
-  return (<ValidateOnSubmit />);
+  return <Form />;
+};
+
+export const ValidationWithHintForm = () => {
+  class Form extends React.Component {
+    render() {
+      return (
+        <form>
+          <div className="row">
+            <label>{'Username:'}</label>
+            <ValidationWithHint
+                hint="Username must be 'drborges'"
+                rules={[ validIf(value => value === "" || value === "drborges") ]}
+            >
+              <input type="text" name="username" autoComplete="off" required />
+            </ValidationWithHint>
+          </div>
+
+          <div className="row">
+            <label>{'Password:'}</label>
+            <ValidationWithHint
+                hint="Password must be at least 5 characters long"
+                rules={[ validIf(value => value === "" || value.length >= 5) ]}
+            >
+              <input type="password" name="password" autoComplete="off" required />
+            </ValidationWithHint>
+          </div>
+
+          <div className="row">
+            <button type="button">{'Submit'}</button>
+          </div>
+        </form>
+      )
+    }
+  }
+
+  return <Form />;
 }
 
-export const ImperativeValidation = () => {
-  class ImperativeValidationForm extends React.Component {
+export const ImperativeValidationForm = () => {
+  class Form extends React.Component {
     state = {};
-    inputs = [];
+    inputs = {};
 
     validation = {
-      username: [ validIf(value => value === "drborges") ],
-      password: [ validIf(value => value.length > 4) ],
+      username: [ validIf(value => value === "drborges", "Username must be 'drborges'") ],
+      password: [ validIf(value => value.length > 4, "Password must be at least 5 characters long") ],
     };
 
     triggerValidation = (input, rules) => validate(input, rules)
@@ -305,36 +308,45 @@ export const ImperativeValidation = () => {
 
     handleSubmit = (event) => {
       event.preventDefault();
-      const validations = this.inputs
+      const validations = Object.values(this.inputs)
+        .filter(input => input)
         .map(input => this.triggerValidation(input, this.validation[input.name]));
 
       Promise.all(validations)
-        .then(() => action("Form is valid!")())
-        .catch(() => action("Form is invalid!")());
+        .then(action("Form is valid!"))
+        .catch(action("Form is invalid!"));
     };
 
     render() {
       return (
         <form onSubmit={this.handleSubmit}>
-          <input
-              ref={input => this.inputs.push(input)}
-              className={this.state.username && "dirty"}
-              name="username"
-              onChange={this.handleChange}
-          />
+          <div className="row">
+            <label>{'Username: '}</label>
+            <input
+                ref={input => input && (this.inputs[input.name] = input)}
+                className={this.state.username && "dirty"}
+                name="username"
+                onChange={this.handleChange}
+            />
+          </div>
 
-          <input
-              ref={input => this.inputs.push(input)}
-              className={this.state.password && "dirty"}
-              name="password"
-              onChange={this.handleChange}
-          />
+          <div className="row">
+            <label>{'Password: '}</label>
+            <input
+                ref={input => input && (this.inputs[input.name] = input)}
+                className={this.state.password && "dirty"}
+                name="password"
+                onChange={this.handleChange}
+            />
+          </div>
 
-          <button>Save</button>
+          <div className="row">
+            <button>{'Submit'}</button>
+          </div>
         </form>
       );
     }
   }
 
-  return <ImperativeValidationForm />;
+  return <Form />;
 }
