@@ -37,13 +37,8 @@ class Validation extends React.Component {
         .then(() => onStart(input))
         .then(() => validate(input, rules))
         .then(() => onValid(input))
-        .catch((e) => {
-          if (e !== PROMISE_THROTTLED) {
-            onInvalid(input);
-            self.handleValidationFinish(input);
-            throw input;
-          }
-        }).then(() => self.handleValidationFinish(input));
+        .catch(e => (e !== PROMISE_THROTTLED) && onInvalid(input))
+        .then(() => self.handleValidationFinish(input));
     };
   }
 

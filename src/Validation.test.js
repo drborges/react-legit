@@ -79,7 +79,7 @@ describe("<Validation />", () => {
       const inputNode = input.instance();
       inputNode.value = 1;
 
-      return input.props().onChange({ target: inputNode }).catch(() => {
+      return input.props().onChange({ target: inputNode }).then(() => {
         expect(inputNode.validationMessage).to.eq("Must be an even number");
         expect(handleInvalidInput).to.have.been.calledWith(inputNode);
       });
@@ -110,7 +110,7 @@ describe("<Validation />", () => {
         </Validation>
       );
 
-      return input.validate().catch(() => {
+      return input.validate().then(() => {
         expect(input.validationMessage).to.eq("Must be an even number");
       });
     });
@@ -336,7 +336,7 @@ describe("<Validation />", () => {
         const inputNode = input.instance();
         inputNode.value = 1;
 
-        return input.props().onChange({ target: inputNode }).catch(() => {
+        return input.props().onChange({ target: inputNode }).then(() => {
           expect(executionPath).to.deep.eq([
             "onStart",
             "onInvalid",
