@@ -1,0 +1,8 @@
+--require babel-register
+--require babel-polyfill
+--require jsdom-global/register
+--require test/spec.helper.js
+--recursive src/**/*.test.js
+--reporter spec
+--ui bdd
+--growl
