@@ -1,5 +1,3 @@
-import Validation from "./Validation";
+import Form from "./Form";
 
-export default Validation;
-export validate from "./validate";
-export validIf from "./rules/validIf";
+export default Form;
