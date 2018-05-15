@@ -24,8 +24,8 @@
     "analyze": "webpack --profile --json > lib/stats.json && webpack-bundle-analyzer -m server lib/stats.json lib/index.js -s gzip"
   },
   "dependencies": {
-    "react": "^16.1.1",
-    "react-dom": "^16.1.1"
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2"
   },
   "devDependencies": {
     "@storybook/react": "^3.2.16",
