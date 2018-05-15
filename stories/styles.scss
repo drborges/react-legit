@@ -1,84 +1,15 @@
-.row {
+.validation-valid {
+  border: 2px solid lightgreen;
+}
+
+.validation-invalid {
+  border: 2px dashed red;
+}
+
+input {
+  outline: none;
+}
+
+div {
   margin: 10px;
-  display: flex;
-  align-items: baseline;
-
-  & > * {
-    flex-grow: 1;
-  }
-
-  label {
-    flex-basis: 20%;
-  }
-}
-
-.hint {
-  color: red;
-  width: 100%;
-  font-size: 10px;
-  text-align: right;
-}
-
-.input-with-hint {
-  display: flex;
-  flex-direction: column;
-  flex-basis: 80%;
-}
-
-form {
-  width: 400px;
-}
-
-label {
-  max-width: 130px;
-  font-weight: bold;
-}
-
-button {
-  color: #fff;
-  height: 35px;
-  padding: 10px;
-  border-radius: 3px;
-  border: thin solid rgb(53, 107, 192);
-  background-color: rgb(53, 107, 192);
-}
-
-input, select, textarea {
-  padding: 5px;
-  border-radius: 3px;
-}
-
-input.dirty:invalid,
-select.dirty:invalid,
-textarea.dirty:invalid {
-  outline: none;
-  border: thin solid red;
-  box-shadow: 0 0 10px red;
-}
-
-input[type=checkbox],
-input[type=checkbox]:valid,
-input[type=radio],
-input[type=radio]:valid {
-  box-shadow: none;
-}
-
-input[type=checkbox].dirty:invalid:before,
-input[type=radio].dirty:invalid:before {
-  color: red;
-  content: "* ";
-  margin-left: -10px;
-}
-
-input.dirty:valid,
-select.dirty:valid,
-textarea.dirty:valid {
-  outline: none;
-  border: thin solid green;
-  box-shadow: 0 0 10px green;
-}
-
-* {
-  font-family: monospace;
-  font-size: 12px;
 }

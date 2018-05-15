@@ -9,6 +9,10 @@ export default class Validate extends React.PureComponent {
     registerWithForm: React.PropTypes.func,
   }
 
+  static defaultProps = {
+    trigger: "onChange",
+  }
+
   state = {
     // 'undefined' represents a prestine validation state,
     // where no validation has taken place yet
@@ -16,7 +20,7 @@ export default class Validate extends React.PureComponent {
   }
 
   componentWillMount() {
-    this.context.registerWithGroup()
+    this.context.registerWithGroup && this.context.registerWithGroup()
   }
 
   render() {

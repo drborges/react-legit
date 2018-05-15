@@ -1,3 +1,2 @@
-import Form from "./Form";
-
-export default Form;
+export Validate from "./Validate";
+export ValidationGroup from "./ValidationGroup";
